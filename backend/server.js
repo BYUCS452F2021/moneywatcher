@@ -23,10 +23,10 @@ let db = new sqlite3.Database('./db/database.db', sqlite3.OPEN_READWRITE, (err) 
 
 /**
  * Create a row in the budget table.
- * 
+ *
  * @apiParam (Request body) {String} name The category name
  * @apiParam (Request body) {float} amount The budget amount
- * 
+ *
  * @apiReturn (Result body) {number} categoryID The id of the newly created category
  */
 app.post('/budget/create', (req, res) => {
@@ -34,8 +34,8 @@ app.post('/budget/create', (req, res) => {
     let name = req.body.name;
     let amount = req.body.amount;
     if (name === null ||
-        amount === null || 
-        typeof name !== "string" || 
+        amount === null ||
+        typeof name !== "string" ||
         typeof amount !== "number"
     ) {
         console.log(name, typeof name, amount, typeof amount);
@@ -57,7 +57,7 @@ app.post('/budget/create', (req, res) => {
 
 /**
  * Read a row in the budget table.
- * 
+ *
  * @apiParam (Request body) {number} categoryID The category ID of the row to return
  */
  app.post('/budget/read', (req, res) => {
@@ -111,7 +111,7 @@ app.post('/budget/create', (req, res) => {
 
 /**
  * Update a row in the budget table.
- * 
+ *
  * @apiParam (Request body) {number} categoryID The category ID of the row to update
  * @apiParam (Request body) {String} name The category name
  * @apiParam (Request body) {float} amount The budget amount
@@ -123,9 +123,9 @@ app.post('/budget/create', (req, res) => {
     let amount = req.body.amount;
     if (categoryID === null ||
         name === null ||
-        amount === null || 
+        amount === null ||
         typeof categoryID !== "number" ||
-        typeof name !== "string" || 
+        typeof name !== "string" ||
         typeof amount !== "number"
     ) {
         res.status(400).json({error: "Invalid request body"});
@@ -145,7 +145,7 @@ app.post('/budget/create', (req, res) => {
 
 /**
  * Delete a row in the budget table.
- * 
+ *
  * @apiParam (Request body) {number} categoryID The category ID of the row to delete
  */
  app.post('/budget/delete', (req, res) => {
@@ -166,6 +166,149 @@ app.post('/budget/create', (req, res) => {
         }
         res.status(200).json({message: "Deleted succesfully"});
       });
+});
+
+/**
+ * Create a row in the budget table.
+ *
+ * @apiParam (Request body) {String} name The vendor name
+ * @apiParam (Request body) {String} description The vendor description
+ *
+ * @apiReturn (Result body) {number} vendorID The id of the newly created vendor
+ */
+app.post('vendor/create', (req, res) => {
+  // Verify request format
+  let name = req.body.name;
+  let description = req.body.description;
+  if (name === null ||
+      description === null ||
+      typeof name !== "string" ||
+      typeof amount !== "string"
+  ) {
+      res.status(400).json({error: "Invalid request body"});
+      return;
+  }
+
+  let sql = `INSERT INTO vendor(name, description) VALUES(?, ?)`;
+  let stmt = db.prepare(sql);
+  stmt.run([name, description], function (err) {
+      if (err) {
+          console.error(err);
+          res.status(500).json({message: "Error adding to vendor table in database"});
+      } else {
+          res.status(200).json({vendorID: this.lastID});
+      }
+  });
+});
+
+/**
+ * Read a row in the budget table.
+ *
+ * @apiParam (Request body) {number} vendorID The vendor ID of the row to return
+ */
+app.post('vendor/read', (req, res) => {
+  // Verify request format
+ let vendorID = req.body.vendorID;
+ if (vendorID === null ||
+     typeof vendorID !== "number"
+ ) {
+     res.status(400).json({error: "Invalid request body"});
+     return;
+ }
+
+ // Execute the query
+ let sql = `SELECT * FROM vendor WHERE vendorID = ?`;
+ db.get(sql, [vendorID], (err, row) => {
+     if (err) {
+         console.error(err);
+         res.status(500).json({message: "Error reading from vendor table in database"});
+     } else {
+         row == undefined
+             ? console.log(`No vendor found with the id ${vendorID}`)
+             : console.log(`Returned vendor with vendorID ${vendorID}`);
+         res.status(200).json({result: row});
+     }
+   });
+});
+
+/**
+ * Read all rows row in the budget table.
+ */
+app.post('vendor/read_all', (req, res) => {
+  // (No need to verify request)
+
+  // Execute the query
+  let sql = `SELECT * FROM vendor`;
+  db.all(sql, [], (err, data) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({message: "Error reading all from vendor table in database"});
+    } else {
+      data == undefined
+        ? console.log(`No data found in the vendor table`)
+        : console.log(`Returned entire vendor table`);
+      res.status(200).json({result: data});
+    }
+  });
+});
+
+/**
+ * Update a row in the budget table.
+ *
+ * @apiParam (Request body) {number} vendorID The vendor ID of the row to update
+ * @apiParam (Request body) {String} name The vendor name
+ * @apiParam (Request body) {String} description The vendor description
+ */
+app.post('vendor/update', (req, res) => {
+  // Verify request format
+ let vendorID = req.body.vendorID;
+ let name = req.body.name;
+ let description = req.body.description;
+ if (vendorID === null ||
+     name === null ||
+     description === null ||
+     typeof vendorID !== "number" ||
+     typeof name !== "string" ||
+     typeof description !== "string"
+ ) {
+     res.status(400).json({error: "Invalid request body"});
+     return;
+ }
+
+ let sql = `UPDATE vendor SET name = ?, description = ? WHERE vendorID = ?`;
+ db.run(sql, [name, description, vendorID], function(err) {
+     if (err) {
+         console.error(err);
+         res.status(500).json({message: "Error updating vendor table in database"});
+     }
+     console.log(`Row(s) updated: ${this.changes}`);
+     res.status(200).json({message: "Updated succesfully"});
+   });
+});
+
+/**
+ * Delete a row in the budget table.
+ *
+ * @apiParam (Request body) {number} vendorID The vendor ID of the row to delete
+ */
+app.post('vendor/delete', (req, res) => {
+  // Verify request format
+ let vendorID = req.body.vendorID;
+ if (vendorID === null ||
+     typeof vendorID !== "number"
+ ) {
+     res.status(400).json({error: "Invalid request body"});
+     return;
+ }
+
+ let sql = `DELETE FROM vendor WHERE vendorID = ?`;
+ db.run(sql, [categoryID], function(err) {
+     if (err) {
+         console.error(err);
+         res.status(500).json({message: "Error deleting from vendor table in database"});
+     }
+     res.status(200).json({message: "Deleted succesfully"});
+   });
 });
 
 // Start the server
