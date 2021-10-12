@@ -20,6 +20,19 @@ let db = new sqlite3.Database('./db/database.db', sqlite3.OPEN_READWRITE, (err) 
 // Uncomment this line to create the table
 // db.run('CREATE TABLE budget(categoryID number primary key autoincrement, Name varchar(255), Amount double);');
 
+// Create the expenses table if it doesn't already exist
+db.run(`CREATE TABLE IF NOT EXISTS expenses(
+    expenseID NUMBER PRIMARY KEY AUTOINCREMENT,
+    Day VARCHAR(255),
+    categoryID NUMBER,
+    Amount DOUBLE, 
+    vendorID NUMBER,
+    Description VARCHAR(255),
+    FOREIGN KEY(categoryID) REFERENCES budget(categoryID),
+    FOREIGN KEY(vendorID) REFERENCES vendors(vendorID)
+    )`);
+    
+
 
 /**
  * Create a row in the budget table.
@@ -309,6 +322,181 @@ app.post('vendor/delete', (req, res) => {
      }
      res.status(200).json({message: "Deleted succesfully"});
    });
+});
+
+/**
+ * Create a row in the expenses table.
+ *
+ * @apiParam (Request body) {String} day The date the expense was incurred
+ * @apiParam (Request body) {number} categoryID The id of the corresponding category
+ * @apiParam (Request body) {float} amount The expenses amount
+ * @apiParam (Request body) {number} vendorID The id of the corresponding vendor
+ * @apiParam (Request body) {String} description A description of the expense
+ *
+ * @apiReturn (Result body) {number} expenseID The id of the newly created expense
+ */
+ app.post('/expenses/create', (req, res) => {
+    // Verify request format
+    let day = req.body.name;
+    let categoryID = req.body.categoryID;
+    let amount = req.body.amount;
+    let vendorID = req.body.vendorID;
+    let description = req.body.description;
+
+    if (day === null ||
+        categoryID === null||
+        amount === null ||
+        vendorID === null ||
+        description === null ||
+        typeof day !== "string" ||
+        typeof categoryID !== "number" ||
+        typeof amount !== "number" ||
+        typeof vendorID !== "number" ||
+        typeof description !== "string"
+    ) {
+        console.log(day, typeof day, categoryID, typeof categoryID, amount, typeof amount,
+             vendorID, typeof vendorID, description, typeof description);
+        res.status(400).json({error: "Invalid request body"});
+        return;
+    }
+
+    let sql = `INSERT INTO expenses(day, categoryID, amount, vendorID, description) VALUES(?, ?, ?, ?, ?)`;
+    let stmt = db.prepare(sql);
+    stmt.run([day, categoryID, amount, vendorID, description], function (err) {
+        if (err) {
+            console.error(err);
+            res.status(500).json({message: "Error adding to expenses table in database"});
+        } else {
+            res.status(200).json({expenseID: this.lastID});
+        }
+    });
+});
+
+/**
+ * Read a row in the expenses table.
+ *
+ * @apiParam (Request body) {number} expenseID The id of the row to return
+ */
+ app.post('/expenses/read', (req, res) => {
+     // Verify request format
+    let expenseID = req.body.expenseID;
+    if (expenseID === null ||
+        typeof expenseID !== "number"
+    ) {
+        console.log(expenseID, typeof expenseID);
+        res.status(400).json({error: "Invalid request body"});
+        return;
+    }
+
+    // Execute the query
+    let sql = `SELECT * FROM expenses WHERE ExpenseID = ?`;
+    db.get(sql, [expenseID], (err, row) => {
+        if (err) {
+            console.error(err);
+            res.status(500).json({message: "Error reading from expenses table in database"});
+        } else {
+            row == undefined
+                ? console.log(`No expense found with the id ${expenseID}`)
+                : console.log(`Returned expenses with expenseID ${expenseID}`);
+            res.status(200).json({result: row});
+        }
+      });
+
+});
+
+/**
+ * Read all rows row in the expenses table.
+ */
+ app.post('/expenses/read_all', (req, res) => {
+    // (No need to verify request)
+
+    // Execute the query
+    let sql = `SELECT * FROM expenses`;
+    db.all(sql, [], (err, data) => {
+        if (err) {
+            console.error(err);
+            res.status(500).json({message: "Error reading all from expenses table in database"});
+        } else {
+            data == undefined
+                ? console.log(`No data found in the expenses table`)
+                : console.log(`Returned entire expenses table`);
+            res.status(200).json({result: data});
+            }
+        });
+
+});
+
+/**
+ * Update a row in the expenses table.
+ *
+ * @apiParam (Request body) {number} expenseID The expenseID of the row to update
+ * @apiParam (Request body) {String} day The date the expense was incurred
+ * @apiParam (Request body) {number} categoryID The id of the corresponding category
+ * @apiParam (Request body) {float} amount The expenses amount
+ * @apiParam (Request body) {number} vendorID The id of the corresponding vendor
+ * @apiParam (Request body) {String} description A description of the expense
+ *
+ */
+ app.post('/expenses/update', (req, res) => {
+     // Verify request format
+    let expenseID = req.body.expenseID;
+    let day = req.body.name;
+    let categoryID = req.body.categoryID;
+    let amount = req.body.amount;
+    let vendorID = req.body.vendorID;
+    let description = req.body.description;
+
+    if (expenseID === null ||
+        day === null ||
+        categoryID === null||
+        amount === null ||
+        vendorID === null ||
+        description === null ||
+        typeof expenseID !== "number" ||
+        typeof day !== "string" ||
+        typeof categoryID !== "number" ||
+        typeof amount !== "number" ||
+        typeof vendorID !== "number" ||
+        typeof description !== "string"
+    ) {
+        res.status(400).json({error: "Invalid request body"});
+        return;
+    }
+
+    let sql = `UPDATE expenses SET day = ?, categoryID = ?, amount = ?, vendorID = ?, description = ? WHERE expenseID = ?`;
+    db.run(sql, [day, categoryID, amount, vendorID, description, expenseID], function(err) {
+        if (err) {
+            console.error(err);
+            res.status(500).json({message: "Error updating expenses table in database"});
+        }
+        console.log(`Row(s) updated: ${this.changes}`);
+        res.status(200).json({message: "Updated succesfully"});
+      });
+});
+
+/**
+ * Delete a row in the expenses table.
+ *
+ * @apiParam (Request body) {number} expenseID The expense ID of the row to delete
+ */
+ app.post('/expenses/delete', (req, res) => {
+     // Verify request format
+    let expenseID = req.body.expenseID;
+    if (expenseID === null ||
+        typeof expenseID !== "number"
+    ) {
+        res.status(400).json({error: "Invalid request body"});
+        return;
+    }
+
+    let sql = `DELETE FROM expenses WHERE expenseID = ?`;
+    db.run(sql, [expenseID], function(err) {
+        if (err) {
+            console.error(err);
+            res.status(500).json({message: "Error deleting from expenses table in database"});
+        }
+        res.status(200).json({message: "Deleted succesfully"});
+      });
 });
 
 // Start the server
