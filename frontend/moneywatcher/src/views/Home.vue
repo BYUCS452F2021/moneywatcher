@@ -1,19 +1,57 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png" />
-    <h1>This page is for Skyler</h1>
-    <HelloWorld msg="Welcome to Your Vue.js App" />
+    <h1>Add Expense</h1>
+    <div class="column">
+      <div class="row">
+        <input class="item1" v-model="expense_vendor" placeholder="Vendor">
+        <div class="horiz-spacer"/>
+        <input class="item2" v-model="expense_category" placeholder="Category">
+      </div>
+      <div class="row">
+        <input class="item3" v-model="expense_description" placeholder="Description">
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import HelloWorld from "@/components/HelloWorld.vue";
 
 export default {
   name: "Home",
   components: {
-    HelloWorld,
   },
 };
 </script>
+
+<style scoped>
+
+  .column {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+  }
+  .row {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .item1 {
+    display: flex;
+    flex: 7;
+  }
+  .horiz-spacer {
+    display: flex;
+    flex: 1;
+  }
+  .item2 {
+    display: flex;
+    flex: 2;
+  }
+
+  .item3 {
+    display: flex;
+    flex: 1;
+  }
+
+</style>
