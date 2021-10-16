@@ -40,7 +40,7 @@ export default {
       expense_category: "",
       expense_description: "",
       query: "",
-      selected: "",
+      selected_vendor: "",
       vendors: [
         {
           data: []
@@ -62,11 +62,9 @@ export default {
   },
   methods: {
     onSelected(item) {
-      this.selected = item.item.name;
-      console.log(this.selected);
+      this.selected_vendor = item.item.name;
     },
     onInputChange(text) {
-      // event fired when the input changes
       this.query = text;
     },
     /**
@@ -86,7 +84,9 @@ export default {
     addExpense() {
       // TODO: Add expense here
       console.log("Clicked");
-      console.log(this.selected);
+      console.log(this.selected_vendor);
+      console.log(this.expense_category);
+      console.log(this.expense_description);
     }
   },
   beforeMount(){
