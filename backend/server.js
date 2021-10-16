@@ -18,11 +18,18 @@ let db = new sqlite3.Database('./db/database.db', sqlite3.OPEN_READWRITE, (err) 
     console.log('Connected to the in-memory SQlite database.');
 });
 // Uncomment this line to create the table
-// db.run('CREATE TABLE budget(categoryID number primary key autoincrement, Name varchar(255), Amount double);');
 
 // Create the expenses table if it doesn't already exist
+db.run(`CREATE TABLE IF NOT EXISTS budget(
+    categoryID INTEGER PRIMARY KEY AUTOINCREMENT, 
+    Name VARCHAR(255), 
+    Amount DOUBLE)`);
+db.run(`CREATE TABLE IF NOT EXISTS vendo(
+    vendorID INTEGER PRIMARY KEY AUTOINCREMENT, 
+    Name VARCHAR(255), 
+    Description VARCHAR(255))`);
 db.run(`CREATE TABLE IF NOT EXISTS expenses(
-    expenseID NUMBER PRIMARY KEY AUTOINCREMENT,
+    expenseID INTEGER PRIMARY KEY AUTOINCREMENT,
     Day VARCHAR(255),
     categoryID NUMBER,
     Amount DOUBLE, 
@@ -32,8 +39,6 @@ db.run(`CREATE TABLE IF NOT EXISTS expenses(
     FOREIGN KEY(vendorID) REFERENCES vendors(vendorID)
     )`);
     
-
-
 /**
  * Create a row in the budget table.
  *
@@ -189,7 +194,7 @@ app.post('/budget/create', (req, res) => {
  *
  * @apiReturn (Result body) {number} vendorID The id of the newly created vendor
  */
-app.post('vendor/create', (req, res) => {
+app.post('/vendor/create', (req, res) => {
   // Verify request format
   let name = req.body.name;
   let description = req.body.description;
@@ -219,7 +224,7 @@ app.post('vendor/create', (req, res) => {
  *
  * @apiParam (Request body) {number} vendorID The vendor ID of the row to return
  */
-app.post('vendor/read', (req, res) => {
+app.post('/vendor/read', (req, res) => {
   // Verify request format
  let vendorID = req.body.vendorID;
  if (vendorID === null ||
@@ -247,7 +252,7 @@ app.post('vendor/read', (req, res) => {
 /**
  * Read all rows row in the budget table.
  */
-app.post('vendor/read_all', (req, res) => {
+app.post('/vendor/read_all', (req, res) => {
   // (No need to verify request)
 
   // Execute the query
@@ -272,7 +277,7 @@ app.post('vendor/read_all', (req, res) => {
  * @apiParam (Request body) {String} name The vendor name
  * @apiParam (Request body) {String} description The vendor description
  */
-app.post('vendor/update', (req, res) => {
+app.post('/vendor/update', (req, res) => {
   // Verify request format
  let vendorID = req.body.vendorID;
  let name = req.body.name;
@@ -304,7 +309,7 @@ app.post('vendor/update', (req, res) => {
  *
  * @apiParam (Request body) {number} vendorID The vendor ID of the row to delete
  */
-app.post('vendor/delete', (req, res) => {
+app.post('/vendor/delete', (req, res) => {
   // Verify request format
  let vendorID = req.body.vendorID;
  if (vendorID === null ||

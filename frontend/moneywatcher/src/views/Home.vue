@@ -5,7 +5,7 @@
       <div class="row">
         <vue-autosuggest
             :suggestions="filteredOptions"
-            :input-props="{id:'autosuggest__input', placeholder:'Do you feel lucky, punk?'}"
+            :input-props="{id:'autosuggest__input', placeholder:'Vendor'}"
             @input="onInputChange"
             @selected="onSelected"
         >  
@@ -21,7 +21,7 @@
       </div>
       <div class="centered-row">
         <div class="horiz-spacer2"/>
-        <button class="item4">Add</button>
+        <button class="item4" v-on:click="addExpense">Add</button>
         <div class="horiz-spacer2"/>
       </div>
     </div>
@@ -41,13 +41,9 @@ export default {
       expense_description: "",
       query: "",
       selected: "",
-      suggestions: [
+      vendors: [
         {
-          data: [
-            { name: "Bill" },
-            { name: "Bob" },
-            { name: "Joe" }
-          ]
+          data: []
         }
       ]
     };
@@ -56,7 +52,7 @@ export default {
     filteredOptions() {
       return [
         { 
-          data: this.suggestions[0].data.filter(option => {
+          data: this.vendors[0].data.filter(option => {
             var include = option.name.toLowerCase().includes(this.query.toLowerCase());
             return include;
           })
@@ -79,7 +75,23 @@ export default {
     getSuggestionValue(suggestion) {
       return suggestion.item.name;
     },
-  }
+    updateVendors() {
+      // TODO: Update vendors here
+      this.vendors[0].data = [
+        { name: "Bill" },
+        { name: "Bob" },
+        { name: "Joe" }
+      ]
+    },
+    addExpense() {
+      // TODO: Add expense here
+      console.log("Clicked");
+      console.log(this.selected);
+    }
+  },
+  beforeMount(){
+    this.updateVendors();
+ },
 };
 </script>
 
