@@ -4,11 +4,10 @@
     <div class="column">
       <div class="row">
         <vue-autosuggest
-            :suggestions="[{data:['Bob', 'Bill', 'Steven']}]"
+            :suggestions="filteredOptions"
             :input-props="{id:'autosuggest__input', placeholder:'Do you feel lucky, punk?'}"
             @input="onInputChange"
-            @selected="selectHandler"
-            @click="clickHandler"
+            @selected="onSelected"
         >  
           <template slot-scope="{suggestion}">
             <span class="my-suggestion-item">{{suggestion.item}}</span>
@@ -36,6 +35,51 @@ export default {
   name: "Home",
   components: {
   },
+  data() {
+    return {
+      expense_category: "",
+      expense_description: "",
+      query: "",
+      selected: "",
+      suggestions: [
+        {
+          data: [
+            { name: "Bill" },
+            { name: "Bob" },
+            { name: "Joe" }
+          ]
+        }
+      ]
+    };
+  },
+  computed: {
+    filteredOptions() {
+      return [
+        { 
+          data: this.suggestions[0].data.filter(option => {
+            var include = option.name.toLowerCase().includes(this.query.toLowerCase());
+            return include;
+          })
+        }
+      ];
+    }
+  },
+  methods: {
+    onSelected(item) {
+      this.selected = item.item.name;
+      console.log(this.selected);
+    },
+    onInputChange(text) {
+      // event fired when the input changes
+      this.query = text;
+    },
+    /**
+     * This is what the <input/> value is set to when you are selecting a suggestion.
+     */
+    getSuggestionValue(suggestion) {
+      return suggestion.item.name;
+    },
+  }
 };
 </script>
 
