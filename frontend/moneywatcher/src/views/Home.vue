@@ -69,8 +69,8 @@ export default {
     flex: 4;
   }
   .item4 {
-    display: flex;
     flex: 1;
+    text-align: center; /* FIXME doesn't work */
   }
 
 </style>
