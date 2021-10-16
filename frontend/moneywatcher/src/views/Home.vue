@@ -3,7 +3,17 @@
     <h1>Add Expense</h1>
     <div class="column">
       <div class="row">
-        <input class="item1" v-model="expense_vendor" placeholder="Vendor">
+        <vue-autosuggest
+            :suggestions="[{data:['Bob', 'Bill', 'Steven']}]"
+            :input-props="{id:'autosuggest__input', placeholder:'Do you feel lucky, punk?'}"
+            @input="onInputChange"
+            @selected="selectHandler"
+            @click="clickHandler"
+        >  
+          <template slot-scope="{suggestion}">
+            <span class="my-suggestion-item">{{suggestion.item}}</span>
+          </template>
+        </vue-autosuggest>
         <div class="horiz-spacer"/>
         <input class="item2" v-model="expense_category" placeholder="Category">
       </div>

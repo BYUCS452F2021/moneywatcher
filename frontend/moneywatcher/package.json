@@ -11,6 +11,7 @@
     "@jporto/vue-flex-layout": "^3.0.2",
     "core-js": "^3.6.5",
     "vue": "^2.6.11",
+    "vue-autosuggest": "^2.2.0",
     "vue-router": "^3.2.0"
   },
   "devDependencies": {
