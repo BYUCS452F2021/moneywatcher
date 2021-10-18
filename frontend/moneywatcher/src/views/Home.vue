@@ -63,7 +63,7 @@ export default {
   },
   methods: {
     onSelected(item) {
-      this.selected_vendor = item.item.name;
+      this.selected_vendor = item.item;
     },
     onInputChange(text) {
       this.query = text;
@@ -75,23 +75,19 @@ export default {
       return suggestion.item.name;
     },
     updateVendors() {
-      // TODO: Update vendors here
       axios.post('/vendor/read_all').then((response) => {
         var result = response.data.result;
         var newVendors = [];
-        console.log("Result", result);
         result.forEach((vendor) => {
-          console.log("Vendor: ", vendor)
           newVendors.push({vendorID: vendor.vendorID, name: vendor.Name});
         });
-        console.log("new: ", newVendors);
         this.vendors[0].data = newVendors;
       });
     },
     addExpense() {
       // TODO: Add expense here (and vendor)
       console.log("Clicked");
-      console.log(this.selected_vendor);
+      console.log(this.selected_vendor.vendorID);
       console.log(this.expense_category);
       console.log(this.expense_description);
     }
