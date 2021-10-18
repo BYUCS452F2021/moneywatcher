@@ -126,18 +126,17 @@ export default {
       });
     },
     addExpense() {
-      // TODO: Add expense here (and vendor and category)
-      console.log("Cat: ", this.selected_category.categoryID)
+      // TODO: Handle adding expense if it doesn't exist
+      // TODO: If they didn't select a category notify them and don't sent it
       axios.post('/expenses/create', {
-        // day: ,
+        day: "Today", // TODO: Timestamp to now
         categoryID: this.selected_category.categoryID,
-        // amount: ,
+        amount: 5.00, // TODO: Set (Need to add a field for amount)
         vendorID: this.selected_vendor.vendorID, // Handle if there isn't one (if they didn't select one)
         description: this.expense_description
       }).then((response) => {
         console.log("Adding vendor result: ", response.data.result);
       });
-      console.log(this.expense_category);
     }
   },
   beforeMount(){
@@ -188,7 +187,7 @@ export default {
   }
   .item4 {
     flex: 1;
-    text-align: center; /* FIXME doesn't work */
+    text-align: center;
   }
 
 </style>

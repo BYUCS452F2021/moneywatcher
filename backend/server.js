@@ -347,7 +347,7 @@ app.post('/vendor/delete', (req, res) => {
  */
  app.post('/expenses/create', (req, res) => {
     // Verify request format
-    let day = req.body.name;
+    let day = req.body.day;
     let categoryID = req.body.categoryID;
     let amount = req.body.amount;
     let vendorID = req.body.vendorID;
