@@ -50,8 +50,10 @@ export default {
       expense_description: "",
       expense_vendor: "",
       selected_vendor: "",
+      existing_vendor: false,
       expense_category: "",
       selected_category: "",
+      valid_category: false,
       vendors: [
         {
           data: []
@@ -89,15 +91,19 @@ export default {
   methods: {
     onVendorSelected(item) {
       this.selected_vendor = item.item;
+      this.existing_vendor = true;
     },
     onVendorChanged(text) {
       this.expense_vendor = text;
+      this.existing_vendor = false;
     },
     onCategorySelected(item) {
       this.selected_category = item.item;
+      this.valid_category = true;
     },
     onCategoryChanged(text) {
       this.expense_category = text;
+      this.valid_category = false;
     },
     /**
      * This is what the <input/> value is set to when you are selecting a suggestion.
@@ -126,17 +132,23 @@ export default {
       });
     },
     addExpense() {
-      // TODO: Handle adding expense if it doesn't exist
-      // TODO: If they didn't select a category notify them and don't sent it
+      // TODO: Block if this.valid_category is false
+
+      // TODO: Handle adding vendor if it doesn't exist (popup?)
+      // Ask in popup if new vendor should be added
+      // Add the new vendor via api call, get its ID to use in the request
+
+      console.log(this.existing_vendor);
       axios.post('/expenses/create', {
-        day: "Today", // TODO: Timestamp to now
+        day: Date.now(),
         categoryID: this.selected_category.categoryID,
         amount: 5.00, // TODO: Set (Need to add a field for amount)
-        vendorID: this.selected_vendor.vendorID, // Handle if there isn't one (if they didn't select one)
+        vendorID: this.selected_vendor.vendorID,
         description: this.expense_description
       }).then((response) => {
         console.log("Adding vendor result: ", response.data.result);
       });
+      // TODO: Display success/failure
     }
   },
   beforeMount(){
