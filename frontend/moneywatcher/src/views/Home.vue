@@ -10,7 +10,7 @@
             @selected="onSelected"
         >  
           <template slot-scope="{suggestion}">
-            <span class="my-suggestion-item">{{suggestion.item}}</span>
+            <span class="my-suggestion-item">{{suggestion.item.name}}</span>
           </template>
         </vue-autosuggest>
         <div class="horiz-spacer"/>
@@ -75,17 +75,21 @@ export default {
       return suggestion.item.name;
     },
     updateVendors() {
+      // TODO: Update vendors here
       axios.post('/vendor/read_all').then((response) => {
-        console.log("res: ", response);
+        var result = response.data.result;
+        var newVendors = [];
+        console.log("Result", result);
+        result.forEach((vendor) => {
+          console.log("Vendor: ", vendor)
+          newVendors.push({vendorID: vendor.vendorID, name: vendor.Name});
+        });
+        console.log("new: ", newVendors);
+        this.vendors[0].data = newVendors;
       });
-      this.vendors[0].data = [
-        { name: "Bill" },
-        { name: "Bob" },
-        { name: "Joe" }
-      ]
     },
     addExpense() {
-      // TODO: Add expense here
+      // TODO: Add expense here (and vendor)
       console.log("Clicked");
       console.log(this.selected_vendor);
       console.log(this.expense_category);
