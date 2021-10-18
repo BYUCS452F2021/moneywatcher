@@ -1,6 +1,7 @@
 const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
 const app = express();
+const cors = require("cors");
 
 // Set up express
 app.use(
@@ -9,6 +10,10 @@ app.use(
   })
 )
 app.use(express.json());
+var corsOptions = {
+    origin: "http://localhost:5000"
+};
+app.use(cors());
 
 // Set up the database
 let db = new sqlite3.Database('./db/database.db', sqlite3.OPEN_READWRITE, (err) => {
@@ -24,7 +29,7 @@ db.run(`CREATE TABLE IF NOT EXISTS budget(
     categoryID INTEGER PRIMARY KEY AUTOINCREMENT, 
     Name VARCHAR(255), 
     Amount DOUBLE)`);
-db.run(`CREATE TABLE IF NOT EXISTS vendo(
+db.run(`CREATE TABLE IF NOT EXISTS vendor(
     vendorID INTEGER PRIMARY KEY AUTOINCREMENT, 
     Name VARCHAR(255), 
     Description VARCHAR(255))`);
@@ -201,7 +206,7 @@ app.post('/vendor/create', (req, res) => {
   if (name === null ||
       description === null ||
       typeof name !== "string" ||
-      typeof amount !== "string"
+      typeof description !== "string"
   ) {
       res.status(400).json({error: "Invalid request body"});
       return;
@@ -320,7 +325,7 @@ app.post('/vendor/delete', (req, res) => {
  }
 
  let sql = `DELETE FROM vendor WHERE vendorID = ?`;
- db.run(sql, [categoryID], function(err) {
+ db.run(sql, [vendorID], function(err) {
      if (err) {
          console.error(err);
          res.status(500).json({message: "Error deleting from vendor table in database"});

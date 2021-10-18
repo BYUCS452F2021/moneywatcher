@@ -30,6 +30,7 @@
 
 <script>
 // @ is an alias to /src
+import axios from "../main";
 
 export default {
   name: "Home",
@@ -74,7 +75,9 @@ export default {
       return suggestion.item.name;
     },
     updateVendors() {
-      // TODO: Update vendors here
+      axios.post('/vendor/read_all').then((response) => {
+        console.log("res: ", response);
+      });
       this.vendors[0].data = [
         { name: "Bill" },
         { name: "Bob" },
