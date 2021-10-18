@@ -4,17 +4,26 @@
     <div class="column">
       <div class="row">
         <vue-autosuggest
-            :suggestions="filteredOptions"
+            :suggestions="filteredVendors"
             :input-props="{id:'autosuggest__input', placeholder:'Vendor'}"
-            @input="onInputChange"
-            @selected="onSelected"
+            @input="onVendorChanged"
+            @selected="onVendorSelected"
         >  
           <template slot-scope="{suggestion}">
             <span class="my-suggestion-item">{{suggestion.item.name}}</span>
           </template>
         </vue-autosuggest>
         <div class="horiz-spacer"/>
-        <input class="item2" v-model="expense_category" placeholder="Category">
+        <vue-autosuggest
+            :suggestions="filteredCategories"
+            :input-props="{id:'autosuggest__input', placeholder:'Category'}"
+            @input="onCategoryChanged"
+            @selected="onCategorySelected"
+        >  
+          <template slot-scope="{suggestion}">
+            <span class="my-suggestion-item">{{suggestion.item.name}}</span>
+          </template>
+        </vue-autosuggest>
       </div>
       <div class="row">
         <input class="item3" v-model="expense_description" placeholder="Description">
@@ -38,11 +47,17 @@ export default {
   },
   data() {
     return {
-      expense_category: "",
       expense_description: "",
-      query: "",
+      expense_vendor: "",
       selected_vendor: "",
+      expense_category: "",
+      selected_category: "",
       vendors: [
+        {
+          data: []
+        }
+      ],
+      categories: [
         {
           data: []
         }
@@ -50,23 +65,39 @@ export default {
     };
   },
   computed: {
-    filteredOptions() {
+    filteredVendors() {
       return [
         { 
           data: this.vendors[0].data.filter(option => {
-            var include = option.name.toLowerCase().includes(this.query.toLowerCase());
+            var include = option.name.toLowerCase().includes(this.expense_vendor.toLowerCase());
             return include;
           })
         }
       ];
+    },
+    filteredCategories() {
+      return [
+        {
+          data: this.categories[0].data.filter(option => {
+            var include = option.name.toLowerCase().includes(this.expense_category.toLowerCase());
+            return include;
+          })
+        }
+      ]
     }
   },
   methods: {
-    onSelected(item) {
+    onVendorSelected(item) {
       this.selected_vendor = item.item;
     },
-    onInputChange(text) {
-      this.query = text;
+    onVendorChanged(text) {
+      this.expense_vendor = text;
+    },
+    onCategorySelected(item) {
+      this.selected_category = item.item;
+    },
+    onCategoryChanged(text) {
+      this.expense_category = text;
     },
     /**
      * This is what the <input/> value is set to when you are selecting a suggestion.
@@ -84,16 +115,34 @@ export default {
         this.vendors[0].data = newVendors;
       });
     },
+    updateCategories() {
+      axios.post('/budget/read_all').then((response) => {
+        var result = response.data.result;
+        var newCategories = [];
+        result.forEach((category) => {
+          newCategories.push({categoryID: category.categoryID, name: category.Name});
+        });
+        this.categories[0].data = newCategories;
+      });
+    },
     addExpense() {
-      // TODO: Add expense here (and vendor)
-      console.log("Clicked");
-      console.log(this.selected_vendor.vendorID);
+      // TODO: Add expense here (and vendor and category)
+      console.log("Cat: ", this.selected_category.categoryID)
+      axios.post('/expenses/create', {
+        // day: ,
+        categoryID: this.selected_category.categoryID,
+        // amount: ,
+        vendorID: this.selected_vendor.vendorID, // Handle if there isn't one (if they didn't select one)
+        description: this.expense_description
+      }).then((response) => {
+        console.log("Adding vendor result: ", response.data.result);
+      });
       console.log(this.expense_category);
-      console.log(this.expense_description);
     }
   },
   beforeMount(){
     this.updateVendors();
+    this.updateCategories();
  },
 };
 </script>
