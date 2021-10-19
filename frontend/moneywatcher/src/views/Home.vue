@@ -132,7 +132,13 @@ export default {
       });
     },
     addExpense() {
-      // TODO: Block if this.valid_category is false
+      // Block if it isn't an existing category
+      if (this.valid_category === false) {
+        alert("Error, invalid category. Please select one from the list.");
+        this.expense_category = "";
+        this.selected_category = "";
+        return;
+      }
 
       // TODO: Handle adding vendor if it doesn't exist (popup?)
       // Ask in popup if new vendor should be added
