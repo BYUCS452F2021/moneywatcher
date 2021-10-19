@@ -26,7 +26,7 @@
         </vue-autosuggest>
       </div>
       <div class="row">
-        <input class="item3" v-model="expense_description" placeholder="Description">
+        <input class="item3" v-model="entered_description" placeholder="Description">
       </div>
       <div class="centered-row">
         <div class="horiz-spacer2"/>
@@ -47,11 +47,11 @@ export default {
   },
   data() {
     return {
-      expense_description: "",
-      expense_vendor: "",
+      entered_description: "",
+      entered_vendor: "",
       selected_vendor: "",
       existing_vendor: false,
-      expense_category: "",
+      entered_category: "",
       selected_category: "",
       valid_category: false,
       vendors: [
@@ -71,7 +71,7 @@ export default {
       return [
         { 
           data: this.vendors[0].data.filter(option => {
-            var include = option.name.toLowerCase().includes(this.expense_vendor.toLowerCase());
+            var include = option.name.toLowerCase().includes(this.entered_vendor.toLowerCase());
             return include;
           })
         }
@@ -81,7 +81,7 @@ export default {
       return [
         {
           data: this.categories[0].data.filter(option => {
-            var include = option.name.toLowerCase().includes(this.expense_category.toLowerCase());
+            var include = option.name.toLowerCase().includes(this.entered_category.toLowerCase());
             return include;
           })
         }
@@ -94,7 +94,7 @@ export default {
       this.existing_vendor = true;
     },
     onVendorChanged(text) {
-      this.expense_vendor = text;
+      this.entered_vendor = text;
       this.existing_vendor = false;
     },
     onCategorySelected(item) {
@@ -102,7 +102,7 @@ export default {
       this.valid_category = true;
     },
     onCategoryChanged(text) {
-      this.expense_category = text;
+      this.entered_category = text;
       this.valid_category = false;
     },
     /**
@@ -135,26 +135,32 @@ export default {
       // Block if it isn't an existing category
       if (this.valid_category === false) {
         alert("Error, invalid category. Please select one from the list.");
-        this.expense_category = "";
-        this.selected_category = "";
         return;
       }
 
-      // TODO: Handle adding vendor if it doesn't exist (popup?)
-      // Ask in popup if new vendor should be added
-      // Add the new vendor via api call, get its ID to use in the request
+      // Handle nonexistent vendors
+      if (!this.existing_vendor) {
+        if (confirm("Vendor not found. Add " + this.entered_vendor + " as a vendor?")) {
+          // TODO:
+          // Add the new vendor via api call
+          // Set this.selected_category.categoryID to the returned ID
+        }
+        else {
+          return;
+        }
+      }
 
-      console.log(this.existing_vendor);
       axios.post('/expenses/create', {
-        day: Date.now(),
+        day: Date.now().toString(),
         categoryID: this.selected_category.categoryID,
         amount: 5.00, // TODO: Set (Need to add a field for amount)
         vendorID: this.selected_vendor.vendorID,
-        description: this.expense_description
-      }).then((response) => {
-        console.log("Adding vendor result: ", response.data.result);
+        description: this.entered_description
+      }).then(() => {
+        alert("Expense added");
+      }).catch(() => {
+        alert("Error adding expense");
       });
-      // TODO: Display success/failure
     }
   },
   beforeMount(){
