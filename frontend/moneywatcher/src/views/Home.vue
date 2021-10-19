@@ -13,7 +13,7 @@
             <span class="my-suggestion-item">{{suggestion.item.name}}</span>
           </template>
         </vue-autosuggest>
-        <div class="horiz-spacer"/>
+        <input type="number" class="amount" v-model="entered_amount" placeholder="Amount">
         <vue-autosuggest
             :suggestions="filteredCategories"
             :input-props="{id:'autosuggest__input', placeholder:'Category'}"
@@ -47,13 +47,14 @@ export default {
   },
   data() {
     return {
-      entered_description: "",
       entered_vendor: "",
       selected_vendor: "",
       existing_vendor: false,
+      entered_amount: "",
       entered_category: "",
       selected_category: "",
       valid_category: false,
+      entered_description: "",
       vendors: [
         {
           data: []
@@ -145,6 +146,12 @@ export default {
       });
     },
     onAdd() {
+      // Block if it doesn't have an amount
+      if (isNaN(parseFloat(this.entered_amount))) {
+        alert("Error, invalid amount.");
+        return;
+      }
+
       // Block if it isn't an existing category
       if (this.valid_category === false) {
         alert("Error, invalid category. Please select one from the list.");
@@ -163,7 +170,7 @@ export default {
             this.addExpense(
               Date.now().toString(), 
               this.selected_category.categoryID, 
-              5.00,  // TODO: Set amount (Need to add a field for it)
+              parseFloat(this.entered_amount),
               res.data.vendorID,
               this.entered_description
             );
@@ -182,7 +189,7 @@ export default {
         this.addExpense(
           Date.now().toString(), 
           this.selected_category.categoryID, 
-          5.00, // TODO: Set amount (Need to add a field for it)
+          parseFloat(this.entered_amount),
           this.selected_vendor.vendorID, 
           this.entered_description
         ); 
@@ -210,11 +217,11 @@ export default {
 
   .item1 {
     display: flex;
-    flex: 7;
-  }
-  .horiz-spacer {
-    display: flex;
     flex: 1;
+  }
+  .amount {
+    display: flex;
+    flex: 2;
   }
   .item2 {
     display: flex;
