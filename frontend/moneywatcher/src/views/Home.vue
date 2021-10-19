@@ -30,7 +30,7 @@
       </div>
       <div class="centered-row">
         <div class="horiz-spacer2"/>
-        <button class="item4" v-on:click="addExpense">Add</button>
+        <button class="item4" v-on:click="onAdd">Add</button>
         <div class="horiz-spacer2"/>
       </div>
     </div>
@@ -131,7 +131,20 @@ export default {
         this.categories[0].data = newCategories;
       });
     },
-    addExpense() {
+    addExpense(day, categoryID, amount, vendorID, description) {
+      axios.post('/expenses/create', {
+        day: day,
+        categoryID: categoryID,
+        amount:amount,
+        vendorID: vendorID,
+        description: description
+      }).then(() => {
+        alert("Expense added");
+      }).catch(() => {
+        alert("Error adding expense");
+      });
+    },
+    onAdd() {
       // Block if it isn't an existing category
       if (this.valid_category === false) {
         alert("Error, invalid category. Please select one from the list.");
@@ -141,26 +154,39 @@ export default {
       // Handle nonexistent vendors
       if (!this.existing_vendor) {
         if (confirm("Vendor not found. Add " + this.entered_vendor + " as a vendor?")) {
-          // TODO:
-          // Add the new vendor via api call
-          // Set this.selected_category.categoryID to the returned ID
+          // Add the new vendor
+          axios.post('/vendor/create', {
+            name: this.entered_vendor,
+            description: "",
+          }).then((res) => {
+            // Add the expense
+            this.addExpense(
+              Date.now().toString(), 
+              this.selected_category.categoryID, 
+              5.00,  // TODO: Set amount (Need to add a field for it)
+              res.data.vendorID,
+              this.entered_description
+            );
+          }).catch(() => {
+            alert("Error adding vendor");
+            return;
+          });
         }
         else {
           return;
         }
       }
 
-      axios.post('/expenses/create', {
-        day: Date.now().toString(),
-        categoryID: this.selected_category.categoryID,
-        amount: 5.00, // TODO: Set (Need to add a field for amount)
-        vendorID: this.selected_vendor.vendorID,
-        description: this.entered_description
-      }).then(() => {
-        alert("Expense added");
-      }).catch(() => {
-        alert("Error adding expense");
-      });
+      else {
+        // Just add the expense
+        this.addExpense(
+          Date.now().toString(), 
+          this.selected_category.categoryID, 
+          5.00, // TODO: Set amount (Need to add a field for it)
+          this.selected_vendor.vendorID, 
+          this.entered_description
+        ); 
+      }
     }
   },
   beforeMount(){
