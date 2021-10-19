@@ -1,6 +1,7 @@
 const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
 const app = express();
+const cors = require("cors");
 
 // Set up express
 app.use(
@@ -9,6 +10,10 @@ app.use(
   })
 )
 app.use(express.json());
+var corsOptions = {
+    origin: "http://localhost:5000"
+};
+app.use(cors());
 
 // Set up the database
 let db = new sqlite3.Database('./db/database.db', sqlite3.OPEN_READWRITE, (err) => {
@@ -18,11 +23,18 @@ let db = new sqlite3.Database('./db/database.db', sqlite3.OPEN_READWRITE, (err) 
     console.log('Connected to the in-memory SQlite database.');
 });
 // Uncomment this line to create the table
-// db.run('CREATE TABLE budget(categoryID number primary key autoincrement, Name varchar(255), Amount double);');
 
 // Create the expenses table if it doesn't already exist
+db.run(`CREATE TABLE IF NOT EXISTS budget(
+    categoryID INTEGER PRIMARY KEY AUTOINCREMENT, 
+    Name VARCHAR(255), 
+    Amount DOUBLE)`);
+db.run(`CREATE TABLE IF NOT EXISTS vendor(
+    vendorID INTEGER PRIMARY KEY AUTOINCREMENT, 
+    Name VARCHAR(255), 
+    Description VARCHAR(255))`);
 db.run(`CREATE TABLE IF NOT EXISTS expenses(
-    expenseID NUMBER PRIMARY KEY AUTOINCREMENT,
+    expenseID INTEGER PRIMARY KEY AUTOINCREMENT,
     Day VARCHAR(255),
     categoryID NUMBER,
     Amount DOUBLE, 
@@ -32,8 +44,6 @@ db.run(`CREATE TABLE IF NOT EXISTS expenses(
     FOREIGN KEY(vendorID) REFERENCES vendors(vendorID)
     )`);
     
-
-
 /**
  * Create a row in the budget table.
  *
@@ -189,14 +199,14 @@ app.post('/budget/create', (req, res) => {
  *
  * @apiReturn (Result body) {number} vendorID The id of the newly created vendor
  */
-app.post('vendor/create', (req, res) => {
+app.post('/vendor/create', (req, res) => {
   // Verify request format
   let name = req.body.name;
   let description = req.body.description;
   if (name === null ||
       description === null ||
       typeof name !== "string" ||
-      typeof amount !== "string"
+      typeof description !== "string"
   ) {
       res.status(400).json({error: "Invalid request body"});
       return;
@@ -219,7 +229,7 @@ app.post('vendor/create', (req, res) => {
  *
  * @apiParam (Request body) {number} vendorID The vendor ID of the row to return
  */
-app.post('vendor/read', (req, res) => {
+app.post('/vendor/read', (req, res) => {
   // Verify request format
  let vendorID = req.body.vendorID;
  if (vendorID === null ||
@@ -247,7 +257,7 @@ app.post('vendor/read', (req, res) => {
 /**
  * Read all rows row in the budget table.
  */
-app.post('vendor/read_all', (req, res) => {
+app.post('/vendor/read_all', (req, res) => {
   // (No need to verify request)
 
   // Execute the query
@@ -272,7 +282,7 @@ app.post('vendor/read_all', (req, res) => {
  * @apiParam (Request body) {String} name The vendor name
  * @apiParam (Request body) {String} description The vendor description
  */
-app.post('vendor/update', (req, res) => {
+app.post('/vendor/update', (req, res) => {
   // Verify request format
  let vendorID = req.body.vendorID;
  let name = req.body.name;
@@ -304,7 +314,7 @@ app.post('vendor/update', (req, res) => {
  *
  * @apiParam (Request body) {number} vendorID The vendor ID of the row to delete
  */
-app.post('vendor/delete', (req, res) => {
+app.post('/vendor/delete', (req, res) => {
   // Verify request format
  let vendorID = req.body.vendorID;
  if (vendorID === null ||
@@ -315,7 +325,7 @@ app.post('vendor/delete', (req, res) => {
  }
 
  let sql = `DELETE FROM vendor WHERE vendorID = ?`;
- db.run(sql, [categoryID], function(err) {
+ db.run(sql, [vendorID], function(err) {
      if (err) {
          console.error(err);
          res.status(500).json({message: "Error deleting from vendor table in database"});
@@ -337,7 +347,7 @@ app.post('vendor/delete', (req, res) => {
  */
  app.post('/expenses/create', (req, res) => {
     // Verify request format
-    let day = req.body.name;
+    let day = req.body.day;
     let categoryID = req.body.categoryID;
     let amount = req.body.amount;
     let vendorID = req.body.vendorID;
