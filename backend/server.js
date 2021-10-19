@@ -26,12 +26,12 @@ let db = new sqlite3.Database('./db/database.db', sqlite3.OPEN_READWRITE, (err) 
 
 // Create the expenses table if it doesn't already exist
 db.run(`CREATE TABLE IF NOT EXISTS budget(
-    categoryID INTEGER PRIMARY KEY AUTOINCREMENT,
-    Name VARCHAR(255),
+    categoryID INTEGER PRIMARY KEY AUTOINCREMENT, 
+    Name VARCHAR(255), 
     Amount DOUBLE)`);
 db.run(`CREATE TABLE IF NOT EXISTS vendor(
-    vendorID INTEGER PRIMARY KEY AUTOINCREMENT,
-    Name VARCHAR(255),
+    vendorID INTEGER PRIMARY KEY AUTOINCREMENT, 
+    Name VARCHAR(255), 
     Description VARCHAR(255))`);
 db.run(`CREATE TABLE IF NOT EXISTS expenses(
     expenseID INTEGER PRIMARY KEY AUTOINCREMENT,
