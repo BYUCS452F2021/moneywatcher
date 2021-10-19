@@ -417,7 +417,7 @@ app.post('/vendor/delete', (req, res) => {
 /**
  * Read all rows row in the expenses table.
  */
- app.post('/expenses/read_all', (req, res) => {
+ app.get('/expenses/read_all', (req, res) => {
     // (No need to verify request)
 
     // Execute the query
