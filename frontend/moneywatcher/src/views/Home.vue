@@ -8,7 +8,7 @@
             :input-props="{id:'autosuggest__input', placeholder:'Vendor'}"
             @input="onVendorChanged"
             @selected="onVendorSelected"
-        >  
+        >
           <template slot-scope="{suggestion}">
             <span class="my-suggestion-item">{{suggestion.item.name}}</span>
           </template>
@@ -19,7 +19,7 @@
             :input-props="{id:'autosuggest__input', placeholder:'Category'}"
             @input="onCategoryChanged"
             @selected="onCategorySelected"
-        >  
+        >
           <template slot-scope="{suggestion}">
             <span class="my-suggestion-item">{{suggestion.item.name}}</span>
           </template>
@@ -70,7 +70,7 @@ export default {
   computed: {
     filteredVendors() {
       return [
-        { 
+        {
           data: this.vendors[0].data.filter(option => {
             var include = option.name.toLowerCase().includes(this.entered_vendor.toLowerCase());
             return include;
@@ -113,7 +113,7 @@ export default {
       return suggestion.item.name;
     },
     updateVendors() {
-      axios.post('/vendor/read_all').then((response) => {
+      axios.get('/vendor/read_all').then((response) => {
         var result = response.data.result;
         var newVendors = [];
         result.forEach((vendor) => {
@@ -123,7 +123,7 @@ export default {
       });
     },
     updateCategories() {
-      axios.post('/budget/read_all').then((response) => {
+      axios.get('/budget/read_all').then((response) => {
         var result = response.data.result;
         var newCategories = [];
         result.forEach((category) => {
@@ -168,8 +168,8 @@ export default {
           }).then((res) => {
             // Add the expense
             this.addExpense(
-              Date.now().toString(), 
-              this.selected_category.categoryID, 
+              Date.now().toString(),
+              this.selected_category.categoryID,
               parseFloat(this.entered_amount),
               res.data.vendorID,
               this.entered_description
@@ -187,12 +187,12 @@ export default {
       else {
         // Just add the expense
         this.addExpense(
-          Date.now().toString(), 
-          this.selected_category.categoryID, 
+          Date.now().toString(),
+          this.selected_category.categoryID,
           parseFloat(this.entered_amount),
-          this.selected_vendor.vendorID, 
+          this.selected_vendor.vendorID,
           this.entered_description
-        ); 
+        );
       }
     }
   },

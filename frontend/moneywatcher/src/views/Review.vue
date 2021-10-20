@@ -59,7 +59,7 @@ export default {
   methods: {
     updateExpenses() {
         // TODO: Create an endpoint for reading expenses with budget and vendor names and use that instead
-      axios.post("/expenses/read_all").then((response) => {
+      axios.get("/expenses/read_all").then((response) => {
         var result = response.data.result;
         var newExpenses = [];
         result.forEach((expense) => {
@@ -76,7 +76,7 @@ export default {
   },
   beforeMount() {
     this.updateExpenses();
-    
+
   },
 };
 </script>

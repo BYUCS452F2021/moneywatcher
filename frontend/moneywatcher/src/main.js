@@ -28,20 +28,6 @@ export default axios.create({
   }
 });
 
-import axios from "axios";
-
-export default axios.create({
-  baseURL: "http://localhost:5000",
-  headers: {
-    "Content-type": "application/json"
-  },
-  configureWebpack: {
-    devServer: {
-      headers: { 'Access-Control-Allow-Origin': '*' }
-    }
-  }
-});
-
 new Vue({
   router,
   render: (h) => h(App),
