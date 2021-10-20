@@ -37,13 +37,13 @@ db.run(`CREATE TABLE IF NOT EXISTS expenses(
     expenseID INTEGER PRIMARY KEY AUTOINCREMENT,
     Day VARCHAR(255),
     categoryID NUMBER,
-    Amount DOUBLE, 
+    Amount DOUBLE,
     vendorID NUMBER,
     Description VARCHAR(255),
     FOREIGN KEY(categoryID) REFERENCES budget(categoryID),
     FOREIGN KEY(vendorID) REFERENCES vendors(vendorID)
     )`);
-    
+
 /**
  * Create a row in the budget table.
  *
@@ -113,7 +113,7 @@ app.post('/budget/create', (req, res) => {
 /**
  * Read all rows row in the budget table.
  */
- app.post('/budget/read_all', (req, res) => {
+ app.get('/budget/read_all', (req, res) => {
     // (No need to verify request)
 
     // Execute the query
@@ -192,7 +192,7 @@ app.post('/budget/create', (req, res) => {
 });
 
 /**
- * Create a row in the budget table.
+ * Create a row in the vendor table.
  *
  * @apiParam (Request body) {String} name The vendor name
  * @apiParam (Request body) {String} description The vendor description
@@ -225,7 +225,7 @@ app.post('/vendor/create', (req, res) => {
 });
 
 /**
- * Read a row in the budget table.
+ * Read a row in the vendor table.
  *
  * @apiParam (Request body) {number} vendorID The vendor ID of the row to return
  */
@@ -255,9 +255,9 @@ app.post('/vendor/read', (req, res) => {
 });
 
 /**
- * Read all rows row in the budget table.
+ * Read all rows row in the vendor table.
  */
-app.post('/vendor/read_all', (req, res) => {
+app.get('/vendor/read_all', (req, res) => {
   // (No need to verify request)
 
   // Execute the query
@@ -276,7 +276,7 @@ app.post('/vendor/read_all', (req, res) => {
 });
 
 /**
- * Update a row in the budget table.
+ * Update a row in the vendor table.
  *
  * @apiParam (Request body) {number} vendorID The vendor ID of the row to update
  * @apiParam (Request body) {String} name The vendor name
@@ -310,7 +310,7 @@ app.post('/vendor/update', (req, res) => {
 });
 
 /**
- * Delete a row in the budget table.
+ * Delete a row in the vendor table.
  *
  * @apiParam (Request body) {number} vendorID The vendor ID of the row to delete
  */
@@ -417,7 +417,7 @@ app.post('/vendor/delete', (req, res) => {
 /**
  * Read all rows row in the expenses table.
  */
- app.post('/expenses/read_all', (req, res) => {
+ app.get('/expenses/read_all', (req, res) => {
     // (No need to verify request)
 
     // Execute the query
