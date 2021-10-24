@@ -1,11 +1,14 @@
 <template>
   <div class="home">
-    <h1>Add Expense</h1>
+    <h1 class="expenseHeader">Add Expense</h1>
     <div class="column">
+      <div class="row">
+        <h3>Vendor:</h3>
+      </div>
       <div class="row">
         <vue-autosuggest
             :suggestions="filteredVendors"
-            :input-props="{id:'autosuggest__input', placeholder:'Vendor'}"
+            :input-props="{id:'autosuggest__input'}"
             @input="onVendorChanged"
             @selected="onVendorSelected"
         >
@@ -15,12 +18,18 @@
         </vue-autosuggest>
       </div>
       <div class="row">
-        <input type="number" class="amount" v-model="entered_amount" placeholder="Amount">
+        <h3>Amount:</h3>
+      </div>
+      <div class="row">
+        <input type="number" class="inputField" v-model="entered_amount">
+      </div>
+      <div class="row">
+        <h3>Category:</h3>
       </div>
       <div class="row">
         <vue-autosuggest
             :suggestions="filteredCategories"
-            :input-props="{id:'autosuggest__input', placeholder:'Category'}"
+            :input-props="{id:'autosuggest__input'}"
             @input="onCategoryChanged"
             @selected="onCategorySelected"
         >
@@ -30,11 +39,14 @@
         </vue-autosuggest>
       </div>
       <div class="row">
-        <input class="item3" v-model="entered_description" placeholder="Description">
+        <h3>Description:</h3>
+      </div>
+      <div class="row">
+        <input class="inputField" v-model="entered_description">
       </div>
       <div class="centered-row">
         <div class="horiz-spacer2"/>
-        <button class="item4" v-on:click="onAdd">Add</button>
+        <button class="addButton" v-on:click="onAdd">Add</button>
         <div class="horiz-spacer2"/>
       </div>
     </div>
@@ -209,6 +221,9 @@ export default {
 
 <style scoped>
 
+  .expenseHeader {
+    text-align: left;
+  }
   .column {
     display: flex;
     flex-direction: column;
@@ -217,24 +232,15 @@ export default {
   .row {
     display: flex;
     flex-direction: row;
+    flex-grow: 1;
   }
 
-  .item1 {
+  .inputField {
     display: flex;
     flex: 1;
   }
   .amount {
     display: flex;
-    flex: 2;
-  }
-  .item2 {
-    display: flex;
-    flex: 2;
-  }
-
-  .item3 {
-    display: flex;
-    flex: 1;
   }
 
   .centered-row {
@@ -246,8 +252,7 @@ export default {
     display: flex;
     flex: 4;
   }
-  .item4 {
-    flex: 1;
+  .addButton {
     text-align: center;
   }
 
