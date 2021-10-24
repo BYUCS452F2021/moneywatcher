@@ -18,7 +18,10 @@
       </div>
       <vue-autosuggest
           :suggestions="filteredVendors"
-          :input-props="{id:'autosuggest__input', style: 'display: flex; flex: 1; background: #EFEFEF; border-style: none; width: 100%'}"
+          :input-props="{ 
+            id:'autosuggest__input', 
+            style: 'display: flex; flex: 1; background: #EFEFEF; border-style: none; width: 100%'
+          }"
           @input="onVendorChanged"
           @selected="onVendorSelected"
       >
