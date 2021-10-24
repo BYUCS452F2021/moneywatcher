@@ -44,7 +44,7 @@
       <div class="row">
         <input class="inputField" v-model="entered_description">
       </div>
-      <div class="centered-row">
+      <div class="leftAlignedRow">
         <div class="horiz-spacer2"/>
         <button class="addButton" v-on:click="onAdd">Add</button>
         <div class="horiz-spacer2"/>
@@ -231,29 +231,22 @@ export default {
   }
   .row {
     display: flex;
-    flex-direction: row;
-    flex-grow: 1;
   }
 
   .inputField {
     display: flex;
     flex: 1;
   }
-  .amount {
-    display: flex;
-  }
 
-  .centered-row {
+  .leftAlignedRow {
     display: flex;
     flex-direction: row;
-    align-content: center;
-  }
-  .horiz-spacer2 {
-    display: flex;
-    flex: 4;
+    align-content: left;
   }
   .addButton {
     text-align: center;
   }
+
+  /* FIXME: Make autosuggest fill width */
 
 </style>
