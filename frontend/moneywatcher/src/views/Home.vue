@@ -1,8 +1,20 @@
 <template>
+
+  <!-- 
+    TODO:
+      Fix fonts and colors
+      Make autosuggest fill width
+      Make autosuggest pretty
+      
+    Stretch goals:
+      Graphs
+      User specified date
+   -->
+
   <div class="home">
-    <h1 class="expenseHeader">Add Expense</h1>
+    <h1 class="header">Add Expense</h1>
     <div class="column">
-      <div class="row">
+      <div class="row header">
         <h3>Vendor:</h3>
       </div>
       <div class="row">
@@ -17,13 +29,13 @@
           </template>
         </vue-autosuggest>
       </div>
-      <div class="row">
+      <div class="row header">
         <h3>Amount:</h3>
       </div>
       <div class="row">
         <input type="number" class="inputField" v-model="entered_amount">
       </div>
-      <div class="row">
+      <div class="row header">
         <h3>Category:</h3>
       </div>
       <div class="row">
@@ -38,7 +50,7 @@
           </template>
         </vue-autosuggest>
       </div>
-      <div class="row">
+      <div class="row header">
         <h3>Description:</h3>
       </div>
       <div class="row">
@@ -221,8 +233,9 @@ export default {
 
 <style scoped>
 
-  .expenseHeader {
+  .header {
     text-align: left;
+    margin: 0;
   }
   .column {
     display: flex;
@@ -244,9 +257,8 @@ export default {
     align-content: left;
   }
   .addButton {
+    margin-top: 20px;
     text-align: center;
   }
-
-  /* FIXME: Make autosuggest fill width */
 
 </style>
