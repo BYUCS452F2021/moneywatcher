@@ -12,10 +12,10 @@
    -->
 
   <div class="home">
-    <h1 class="header">Add Expense</h1>
+    <h1 class="mainHeader">Add Expense</h1>
     <div class="column">
-      <div class="row header">
-        <h3>Vendor:</h3>
+      <div>
+        <h3 class="header">Vendor:</h3>
       </div>
       <div class="row">
         <vue-autosuggest
@@ -29,14 +29,14 @@
           </template>
         </vue-autosuggest>
       </div>
-      <div class="row header">
-        <h3>Amount:</h3>
+      <div>
+        <h3 class="header">Amount:</h3>
       </div>
       <div class="row">
         <input type="number" class="inputField" v-model="entered_amount">
       </div>
-      <div class="row header">
-        <h3>Category:</h3>
+      <div>
+        <h3 class="header">Category:</h3>
       </div>
       <div class="row">
         <vue-autosuggest
@@ -50,8 +50,8 @@
           </template>
         </vue-autosuggest>
       </div>
-      <div class="row header">
-        <h3>Description:</h3>
+      <div>
+        <h3 class="header">Description:</h3>
       </div>
       <div class="row">
         <input class="inputField" v-model="entered_description">
@@ -233,22 +233,48 @@ export default {
 
 <style scoped>
 
+  .mainHeader {
+    text-align: left;
+    color: #000000;
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 30px;
+    line-height: 35px;
+    margin: 0;
+  }
+
   .header {
     text-align: left;
     margin: 0;
+    color: #000000;
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 20px;
+    line-height: 23px;
+    margin: 0;
+    padding: 10px 0px 10px 0px;
   }
+
   .column {
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
+    margin: 0;
+    padding: 0;
   }
   .row {
     display: flex;
+    margin: 0;
+    padding: 0;
   }
 
   .inputField {
     display: flex;
     flex: 1;
+    background: #EFEFEF;
+    border-style: none;
   }
 
   .leftAlignedRow {
@@ -259,6 +285,11 @@ export default {
   .addButton {
     margin-top: 20px;
     text-align: center;
+    background: #C4C4C4;
+    border-style: none;
+    font-size: 20px;
+    font-family: Roboto;
+    padding: 0px 15px 0px 15px;
   }
 
 </style>
