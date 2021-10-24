@@ -2,7 +2,6 @@
 
   <!-- 
     TODO:
-      Fix fonts and colors
       Make autosuggest fill width
       Make autosuggest pretty
       
@@ -17,18 +16,16 @@
       <div>
         <h3 class="header">Vendor:</h3>
       </div>
-      <div class="row">
-        <vue-autosuggest
-            :suggestions="filteredVendors"
-            :input-props="{id:'autosuggest__input'}"
-            @input="onVendorChanged"
-            @selected="onVendorSelected"
-        >
-          <template slot-scope="{suggestion}">
-            <span class="my-suggestion-item">{{suggestion.item.name}}</span>
-          </template>
-        </vue-autosuggest>
-      </div>
+      <vue-autosuggest
+          :suggestions="filteredVendors"
+          :input-props="{id:'autosuggest__input', style: 'display: flex; flex: 1; background: #EFEFEF; border-style: none; width: 100%'}"
+          @input="onVendorChanged"
+          @selected="onVendorSelected"
+      >
+        <template slot-scope="{suggestion}">
+          <span class="my-suggestion-item">{{suggestion.item.name}}</span>
+        </template> 
+      </vue-autosuggest>
       <div>
         <h3 class="header">Amount:</h3>
       </div>
@@ -38,10 +35,9 @@
       <div>
         <h3 class="header">Category:</h3>
       </div>
-      <div class="row">
         <vue-autosuggest
             :suggestions="filteredCategories"
-            :input-props="{id:'autosuggest__input'}"
+            :input-props="{id:'autosuggest__input', style: 'display: flex; flex: 1; background: #EFEFEF; border-style: none; width: 100%'}"
             @input="onCategoryChanged"
             @selected="onCategorySelected"
         >
@@ -49,7 +45,6 @@
             <span class="my-suggestion-item">{{suggestion.item.name}}</span>
           </template>
         </vue-autosuggest>
-      </div>
       <div>
         <h3 class="header">Description:</h3>
       </div>
@@ -270,6 +265,7 @@ export default {
     padding: 0;
   }
 
+/* FIXME Can't get this to apply to autocomplete input */
   .inputField {
     display: flex;
     flex: 1;
