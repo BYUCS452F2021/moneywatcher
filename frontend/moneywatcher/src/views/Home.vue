@@ -13,7 +13,11 @@
             <span class="my-suggestion-item">{{suggestion.item.name}}</span>
           </template>
         </vue-autosuggest>
+      </div>
+      <div class="row">
         <input type="number" class="amount" v-model="entered_amount" placeholder="Amount">
+      </div>
+      <div class="row">
         <vue-autosuggest
             :suggestions="filteredCategories"
             :input-props="{id:'autosuggest__input', placeholder:'Category'}"
