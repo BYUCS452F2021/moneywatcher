@@ -1,22 +1,46 @@
 <template>
+
+  <!-- 
+    TODO:
+      Make autosuggest fill width
+      Make autosuggest pretty
+      
+    Stretch goals:
+      Graphs
+      User specified date
+   -->
+
   <div class="home">
-    <h1>Add Expense</h1>
+    <h1 class="mainHeader">Add Expense</h1>
     <div class="column">
+      <div>
+        <h3 class="header">Vendor:</h3>
+      </div>
+      <vue-autosuggest
+          :suggestions="filteredVendors"
+          :input-props="{ 
+            id:'autosuggest__input', 
+            style: 'display: flex; flex: 1; background: #EFEFEF; border-style: none; width: 100%'
+          }"
+          @input="onVendorChanged"
+          @selected="onVendorSelected"
+      >
+        <template slot-scope="{suggestion}">
+          <span class="my-suggestion-item">{{suggestion.item.name}}</span>
+        </template> 
+      </vue-autosuggest>
+      <div>
+        <h3 class="header">Amount:</h3>
+      </div>
       <div class="row">
-        <vue-autosuggest
-            :suggestions="filteredVendors"
-            :input-props="{id:'autosuggest__input', placeholder:'Vendor'}"
-            @input="onVendorChanged"
-            @selected="onVendorSelected"
-        >
-          <template slot-scope="{suggestion}">
-            <span class="my-suggestion-item">{{suggestion.item.name}}</span>
-          </template>
-        </vue-autosuggest>
-        <input type="number" class="amount" v-model="entered_amount" placeholder="Amount">
+        <input type="number" class="inputField" v-model="entered_amount">
+      </div>
+      <div>
+        <h3 class="header">Category:</h3>
+      </div>
         <vue-autosuggest
             :suggestions="filteredCategories"
-            :input-props="{id:'autosuggest__input', placeholder:'Category'}"
+            :input-props="{id:'autosuggest__input', style: 'display: flex; flex: 1; background: #EFEFEF; border-style: none; width: 100%'}"
             @input="onCategoryChanged"
             @selected="onCategorySelected"
         >
@@ -24,13 +48,15 @@
             <span class="my-suggestion-item">{{suggestion.item.name}}</span>
           </template>
         </vue-autosuggest>
+      <div>
+        <h3 class="header">Description:</h3>
       </div>
       <div class="row">
-        <input class="item3" v-model="entered_description" placeholder="Description">
+        <input class="inputField" v-model="entered_description">
       </div>
-      <div class="centered-row">
+      <div class="leftAlignedRow">
         <div class="horiz-spacer2"/>
-        <button class="item4" v-on:click="onAdd">Add</button>
+        <button class="addButton" v-on:click="onAdd">Add</button>
         <div class="horiz-spacer2"/>
       </div>
     </div>
@@ -205,46 +231,64 @@ export default {
 
 <style scoped>
 
+  .mainHeader {
+    text-align: left;
+    color: #000000;
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 30px;
+    line-height: 35px;
+    margin: 0;
+  }
+
+  .header {
+    text-align: left;
+    margin: 0;
+    color: #000000;
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 20px;
+    line-height: 23px;
+    margin: 0;
+    padding: 10px 0px 10px 0px;
+  }
+
   .column {
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
+    margin: 0;
+    padding: 0;
   }
   .row {
     display: flex;
-    flex-direction: row;
+    margin: 0;
+    padding: 0;
   }
 
-  .item1 {
+/* FIXME Can't get this to apply to autocomplete input */
+  .inputField {
     display: flex;
     flex: 1;
-  }
-  .amount {
-    display: flex;
-    flex: 2;
-  }
-  .item2 {
-    display: flex;
-    flex: 2;
+    background: #EFEFEF;
+    border-style: none;
   }
 
-  .item3 {
-    display: flex;
-    flex: 1;
-  }
-
-  .centered-row {
+  .leftAlignedRow {
     display: flex;
     flex-direction: row;
-    align-content: center;
+    align-content: left;
   }
-  .horiz-spacer2 {
-    display: flex;
-    flex: 4;
-  }
-  .item4 {
-    flex: 1;
+  .addButton {
+    margin-top: 20px;
     text-align: center;
+    background: #C4C4C4;
+    border-style: none;
+    font-size: 20px;
+    font-family: Roboto;
+    padding: 0px 15px 0px 15px;
   }
 
 </style>
