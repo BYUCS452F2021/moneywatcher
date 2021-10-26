@@ -2,7 +2,7 @@
   <div class="budget">
     <h2>Monthly Budget</h2>
     <div id="category_table">
-      <div class="row" id="header">
+      <div class="row" id="titles">
         <h3 id="title_left">Category</h3>
         <h3 id="title_right">Amount</h3>
       </div>
@@ -142,13 +142,14 @@ export default {
 
 h2 {
   padding: 0px 10px;
+  margin-bottom: 0px;
 }
 
 #category_table {
   padding: 0px 0px;
 }
 
-#header, #footer {
+#titles, #footer {
   background-color: transparent;
 }
 
