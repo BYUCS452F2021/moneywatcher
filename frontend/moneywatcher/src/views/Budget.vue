@@ -1,24 +1,42 @@
 <template>
   <div class="budget">
-    <h1>Budget</h1>
+    <h2>Monthly Budget</h2>
     <div id="category_table">
-      <div class="row">
-        <h4 class="row_name">Category</h4>
-        <h4>Amount</h4>
+      <div class="row" id="header">
+        <h3 id="title_left">Category</h3>
+        <h3 id="title_right">Amount</h3>
       </div>
       <div class="row" v-for="category in categories" :key="category.vendorID">
         <p class="row_name">{{category.Name}}</p>
-        <p class="row_amount">${{category.Amount}}</p>
+        <p class="row_amount">${{category.Amount.toFixed(2)}}</p>
+        <div id="edit_button" v-on:click="deleteCategory(category.categoryID)">
+          <img src="/icons/edit.svg">
+        </div>
         <div id="remove_button" v-on:click="deleteCategory(category.categoryID)">
-          X
+          <img src="/icons/delete.svg">
         </div>
       </div>
       <div class="row">
-        <h4 class="row_name">Total</h4>
-        <h4>${{total_budget}}</h4>
+        <div id="add_data" v-if="add_field">
+          <input v-model="new_category" type="text" id="name" name="name">
+          <input v-model="new_amount" type="number" id="amount" amount="amount">
+          <div id="submit_button" v-on:click="addCategory()">
+            <img src="/icons/check.svg">
+          </div>
+          <div id="cancel_button" v-on:click="deactivateAdd()">
+            <img src="/icons/x.svg">
+          </div>
+        </div>
+        <div id="add_category" v-else v-on:click="setAdd()">
+          <img src="/icons/add.svg">
+        </div>
+      </div>
+      <div class="row" id="footer">
+        <h3 class="row_name">Total</h3>
+        <h3 class="row_amount_total">${{total_budget}}</h3>
       </div>
     </div>
-    <div>
+    <div class="deactivated">
       <p>Add Categories</p>
       <form>
         <div id="form_data">
@@ -46,7 +64,8 @@ export default {
     return {
       categories: [],
       new_category: "",
-      new_amount: 0
+      new_amount: 0,
+      add_field: false
     }
   },
   created() {
@@ -69,6 +88,10 @@ export default {
           amount: parseFloat(this.new_amount)
         });
         console.log(response);
+        this.new_category = "";
+        this.new_amount = 0;
+        this.loadBudget();
+        this.deactivateAdd();
       }
       catch (error) {
         console.log(error)
@@ -85,6 +108,14 @@ export default {
     catch (error) {
       console.log(error)
     }
+    },
+    setAdd() {
+      this.add_field = true;
+    },
+    deactivateAdd() {
+      this.add_field = false;
+      this.new_category = "";
+      this.new_amount = 0;
     }
   },
   computed: {
@@ -95,7 +126,7 @@ export default {
         total += arr[index].Amount;
       }
 
-      return total;
+      return total.toFixed(2);
     }
   }
 };
@@ -104,28 +135,113 @@ export default {
 
 <style scoped>
 
+.budget {
+  text-align: left;
+  padding: 0px 5px;
+}
+
+h2 {
+  padding: 0px 10px;
+}
+
 #category_table {
-  padding: 0px 20px;
+  padding: 0px 0px;
+}
+
+#header, #footer {
+  background-color: transparent;
+}
+
+#title_left {
+  width: 55%;
+  padding: 0 0 0 10px;
+}
+
+#title_right {
+  width: 45%;
+  padding: 0 10px 0 0;
 }
 
 .row {
   display: flex;
-  text-align: left;
+  background-color: #F8F8F8;
+  margin: 10px 0;
+  padding: 0;
+  height: 45px;
+}
+
+.row_name, .row_amount, .row_amount_total {
+  margin: 0px;
+  padding: 10px;
 }
 
 .row_name {
-  width: 60%;
+  width: 55%;
 }
 
 .row_amount {
-  width: 30%;
+  width: 20%;
+}
+
+.row_amount_total {
+  width: 45%;
+}
+
+#edit_button {
+  width: 15%;
+  align-self: center;
+  padding-top: 6px;
+  margin: auto;
+}
+
+#edit_button img {
+  height: 35px;
 }
 
 #remove_button {
   width: 10%;
-  text-align: center;
+  self-align: center;
+  padding-top: 6px;
   margin: auto;
-  border-style: solid;
+}
+
+#add_data {
+  display: flex;
+}
+
+#add_category {
+  margin: 5px 10px;
+}
+
+#add_category img {
+  height: 30px;
+  padding-top: 3px;
+}
+
+#name, #amount {
+  margin: 10px 5px;
+}
+
+#amount {
+  margin-right: 20px;
+}
+
+#name {
+  width: 55%;
+}
+
+#amount {
+  width: 21%;
+}
+
+#submit_button, #cancel_button {
+  width: 12%;
+  margin-horizontal: auto;
+  margin-top: 6px;
+}
+
+#submit_button img {
+  height: 25px;
 }
 
 #form_data {
@@ -133,5 +249,7 @@ export default {
   padding: 0px 20px;
 }
 
-
+.deactivated {
+  display: none;
+}
 </style>
