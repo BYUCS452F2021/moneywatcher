@@ -9,6 +9,12 @@ import "vue-virtual-scroller/dist/vue-virtual-scroller.css";
 import VueVirtualScroller from "vue-virtual-scroller";
 Vue.component("RecycleScroller", VueVirtualScroller.RecycleScroller);
 
+import { MonthPicker } from 'vue-month-picker'
+import { MonthPickerInput } from 'vue-month-picker'
+
+Vue.use(MonthPicker)
+Vue.use(MonthPickerInput)
+
 Vue.config.productionTip = false;
 Vue.use(VueFlexLayout)
 Vue.use(VueAutosuggest);

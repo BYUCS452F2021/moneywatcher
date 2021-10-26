@@ -437,6 +437,63 @@ app.post('/vendor/delete', (req, res) => {
 });
 
 /**
+ * Read all rows in the expenses table, but with corresponding vendor and category names instead of IDs.
+ */
+ app.post('/expenses/read_all_names', (req, res) => {
+    // (No need to verify request)
+
+    // Execute the query
+    let sql = `SELECT expenseID, day, expenses.amount, expenses.description, vendor.name AS vendorName, budget.name AS categoryName FROM expenses 
+    INNER JOIN vendor ON vendor.vendorID = expenses.vendorID 
+    INNER JOIN budget ON budget.categoryID = expenses.categoryID`;
+    db.all(sql, [], (err, data) => {
+        if (err) {
+            console.error(err);
+            res.status(500).json({message: "Error reading all from expenses table in database"});
+        } else {
+            data == undefined
+                ? console.log(`No data found in the expenses table with joins`)
+                : console.log(`Returned entire expenses table with joins`);
+            res.status(200).json({result: data});
+            }
+        });
+
+});
+
+/**
+ * Read all rows in the expenses table, but with corresponding vendor and category names instead of IDs, and selected by the given date.
+ */
+ app.post('/expenses/read_all_names_by_date', (req, res) => {
+    let month = req.body.month;
+    let year = req.body.year;
+
+    if (month === null || year === null) {
+        res.status(400).json({error: "Invalid request body"});
+        return;
+    }
+    
+    let monthYear = month + '-' + year
+
+    // Execute the query
+    let sql = `SELECT expenseID, day, expenses.amount, expenses.description, vendor.name AS vendorName, budget.name AS categoryName FROM expenses 
+    INNER JOIN vendor ON vendor.vendorID = expenses.vendorID 
+    INNER JOIN budget ON budget.categoryID = expenses.categoryID
+    WHERE strftime('%m-%Y', day/1000, 'unixepoch') = ?`;
+    db.all(sql, [monthYear], (err, data) => {
+        if (err) {
+            console.error(err);
+            res.status(500).json({message: "Error reading all by date from expenses table in database"});
+        } else {
+            data == undefined
+                ? console.log(`No data found in the expenses table by date`)
+                : console.log(`Returned entire expenses table by date`);
+            res.status(200).json({result: data});
+            }
+        });
+
+});
+
+/**
  * Update a row in the expenses table.
  *
  * @apiParam (Request body) {number} expenseID The expenseID of the row to update
@@ -496,6 +553,7 @@ app.post('/vendor/delete', (req, res) => {
         typeof expenseID !== "number"
     ) {
         res.status(400).json({error: "Invalid request body"});
+        console.log("ERROR 1");
         return;
     }
 
