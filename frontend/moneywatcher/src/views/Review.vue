@@ -154,9 +154,14 @@ export default {
       });
     },
     updateExpensesByDate() {
+      var monthToGet = this.getMonthFromString(this.date.month);
+      monthToGet = monthToGet.toString()
+      if (monthToGet.length === 1) {
+          monthToGet = "0" + monthToGet;
+      }
       axios.post("/expenses/read_all_names_by_date", {
-          month: this.getMonthFromString(this.date.month),
-          year: this.date.year
+          month: monthToGet,
+          year: this.date.year,
       }).then((response) => {
         var result = response.data.result;
         var newExpenses = [];
@@ -233,6 +238,7 @@ export default {
         var pickerDiv = document.getElementById("pickerDiv");
         var pos = document.getElementById("pos");
         var overlay = document.getElementById("overlay");
+
         pos.style.display = "block";
         pickerDiv.style.display = "block";
         overlay.style.display = "block";
@@ -525,12 +531,6 @@ export default {
     top: 0%;
     margin-left: -10px;
     padding: 0px;
-}
-
-.popupDescription {
-    display: block;
-    top: 0%;
-    position: absolute;
 }
 
 @media (max-width: 750px) {
