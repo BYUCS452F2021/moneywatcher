@@ -2,6 +2,9 @@
 import { Bar } from 'vue-chartjs'
 import axios from "../main";
 
+const withinBudgetColor = '#223BC9';
+const overBudgetColor = '#FF0000';
+
 export default {
   extends: Bar,
   data: () => ({
@@ -12,8 +15,8 @@ export default {
       labels: [],
       datasets: [
         {
-          backgroundColor: '#223BC9',
-          data: [40, 15, 30]
+          backgroundColor: [],
+          data: []
         },
       ]
     },
@@ -62,9 +65,17 @@ export default {
 
           this.chartdata.labels = this.apidata.categories.map((category) => category.name);
           this.chartdata.datasets[0].data = [];
+          this.chartdata.datasets[0].backgroundColor = [];
           this.apidata.categories.forEach((category) => {
             var usedAmount = 100 * category.currentAmount / category.totalAmount;
-            this.chartdata.datasets[0].data.push(100 * category.currentAmount / category.totalAmount);
+            if (usedAmount <= 100) {
+              this.chartdata.datasets[0].data.push(usedAmount);
+              this.chartdata.datasets[0].backgroundColor.push(withinBudgetColor);
+            }
+            else {
+              this.chartdata.datasets[0].data.push(usedAmount);
+              this.chartdata.datasets[0].backgroundColor.push(overBudgetColor);
+            }
             if (usedAmount > this.options.scales.yAxes[0].ticks.max) this.options.scales.yAxes[0].ticks.max = usedAmount;
           })
           this.renderChart(this.chartdata, this.options)
