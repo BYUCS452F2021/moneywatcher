@@ -11,6 +11,7 @@
    -->
 
   <div class="home">
+    <Chart></Chart>
     <h1 class="mainHeader">Add Expense</h1>
     <div class="column">
       <div>
@@ -66,10 +67,12 @@
 <script>
 // @ is an alias to /src
 import axios from "../main";
+import Chart from '../components/Chart.vue';
 
 export default {
   name: "Home",
   components: {
+    Chart
   },
   data() {
     return {
@@ -90,7 +93,7 @@ export default {
         {
           data: []
         }
-      ]
+      ],
     };
   },
   computed: {
@@ -167,6 +170,7 @@ export default {
         description: description
       }).then(() => {
         alert("Expense added");
+        this.$router.go();	// Refreshes page
       }).catch(() => {
         alert("Error adding expense");
       });
