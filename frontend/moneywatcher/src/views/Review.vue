@@ -501,7 +501,6 @@ export default {
     width: 100%;
     position: absolute;
     top: 0%;
-    border: solid black 2px;
     margin-left: -10px;
     padding: 0px;
 }
