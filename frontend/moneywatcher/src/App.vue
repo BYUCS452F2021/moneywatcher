@@ -44,11 +44,14 @@
 
 #header {
   height: 70px;
-  background-color: #EEEEEE;
-  font-size: 28px;
+  background-color: #0CE8BE;
+  font-size: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-family: verdana;
+  font-weight: bold;
+  color: #0093E0;
 }
 
 #nav {
@@ -76,7 +79,7 @@
   height: 70px;
   position: fixed;
   bottom: 0;
-  background-color: #EEEEEE;
+  background-color: #0CE8BE;
   margin: 0;
   padding: 0;
   align-items: center;
@@ -85,5 +88,9 @@
 .link {
   width: 33%;
   margin-top: 10px;
+}
+
+#home {
+  fill: #0090DB;
 }
 </style>
