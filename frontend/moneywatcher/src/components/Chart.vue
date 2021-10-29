@@ -2,8 +2,6 @@
 import { Bar } from 'vue-chartjs'
 import axios from "../main";
 
-// TODO: Figure out how the things below create the chart, make API calls to get the data, and display it
-
 export default {
   extends: Bar,
   data: () => ({
@@ -14,7 +12,7 @@ export default {
       labels: [],
       datasets: [
         {
-          backgroundColor: '#f87979',
+          backgroundColor: '#223BC9',
           data: [40, 15, 30]
         },
       ]
@@ -28,10 +26,15 @@ export default {
       scales: {
         yAxes: [
           {
+            scaleLabel: {
+              display: true,
+              labelString: '% of Budget Spent'
+            },
             ticks: {
               min: 0,
               max: 100,
               beginAtZero: true,
+              
             }
           }
         ]
@@ -63,8 +66,6 @@ export default {
           this.apidata.categories.forEach((category) => {
             this.chartdata.datasets[0].data.push(100 * category.currentAmount / category.totalAmount);
           })
-          console.log(this.chartdata.datasets);
-          console.log(this.apidata.categories);
           this.renderChart(this.chartdata, this.options)
       });
     });

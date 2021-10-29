@@ -170,6 +170,7 @@ export default {
         description: description
       }).then(() => {
         alert("Expense added");
+        this.$router.go();	// Refreshes page
       }).catch(() => {
         alert("Error adding expense");
       });
