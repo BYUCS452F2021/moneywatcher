@@ -31,7 +31,7 @@
                         ${{ item.amount }}
                     </div>
 
-                    <div class="expenseText">
+                    <div class="expenseText, vendorText">
                         {{ item.vendorName }}
                     </div>
                 </div>
@@ -396,6 +396,11 @@ export default {
 
 .expenseText {
     display:inline;
+    width:70%;
+}
+
+.vendorText {
+    display:inline;
     width:100%;
 }
 
@@ -507,7 +512,7 @@ export default {
     position: absolute;
 }
 
-@media (max-width: 950px) {
+@media (max-width: 750px) {
     .budget {
         display:none;
     }
