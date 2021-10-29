@@ -5,9 +5,10 @@
         <div class="table">
             <div class="tableHeaders">
                 <h2 class="headerDateText" @click="unhidePicker">Date</h2>
-                <h2 class="headerText">Category</h2>
+                <h2 class="headerCategoryText">Category</h2>
                 <h2 class="headerAmountText">Amount</h2>
-                <h2 class="headerText">Vendor</h2>
+                <h2 class="headerVendorText">Vendor</h2>
+                <h2 class="buttons"></h2>
             </div>
             <h2 class="noShow" v-if="noItems">No expenses to show</h2>
             <RecycleScroller
@@ -34,12 +35,14 @@
                     <div class="expenseText, vendorText">
                         {{ item.vendorName }}
                     </div>
+
+                    <div class="buttons">
+                        <img src="/icons/delete.svg" class="icon" @click="deleteExpense(item)">
+                        <img src="/icons/edit.svg" class="icon" @click="editExpense(item)">
+                    </div>
                 </div>
 
-                <div class="buttons">
-                    <img src="/icons/delete.svg" class="icon" @click="deleteExpense(item)">
-                    <img src="/icons/edit.svg" class="icon" @click="editExpense(item)">
-                </div>
+                
             </template>
             </RecycleScroller>
         </div>
@@ -131,12 +134,17 @@ export default {
         result.forEach((expense) => {
             var date = new Date(parseInt(expense.Day));
             var dateString = new Date(date).toDateString();
+            dateString = dateString.substr(dateString.indexOf(" ") + 1);
+            var description = expense.Description;
+            if (description.length === 0) {
+                description = "No description given.";
+            }
           newExpenses.push({
             expenseID: expense.expenseID,
             date: date,
             dateString: dateString,
             amount: parseFloat(expense.Amount).toFixed(2),
-            description: expense.Description,
+            description: description,
             vendorName: expense.vendorName,
             categoryName: expense.categoryName
           });
@@ -155,12 +163,17 @@ export default {
         result.forEach((expense) => {
             var date = new Date(parseInt(expense.Day));
             var dateString = new Date(date).toDateString();
+            dateString = dateString.substr(dateString.indexOf(" ") + 1);
+            var description = expense.Description;
+            if (description.length === 0) {
+                description = "No description given.";
+            }
           newExpenses.push({
             expenseID: expense.expenseID,
             date: date,
             dateString: dateString,
             amount: parseFloat(expense.Amount).toFixed(2),
-            description: expense.Description,
+            description: description,
             vendorName: expense.vendorName,
             categoryName: expense.categoryName
           });
@@ -170,9 +183,11 @@ export default {
       });
     },
     editExpense() {
+        event.stopPropagation();
         // TODO
     },
     deleteExpense(expense) {
+        event.stopPropagation();
       if (confirm("Are you sure you want to delete that expense?")) {
         axios.post('/expenses/delete', {
           expenseID: parseInt(expense.expenseID)
@@ -207,7 +222,7 @@ export default {
           newBudgets.push({
             categoryID: budget.categoryID,
             name: budget.Name,
-            amount: budget.Amount
+            amount: parseFloat(budget.Amount).toFixed(2)
           });
         });
         this.budgets = newBudgets;
@@ -275,7 +290,7 @@ export default {
 
 .expense {
   font-family: "Avenir", Helvetica, Arial, sans-serif;
-  font-size: calc(9px + 0.9vw);
+  font-size: calc(8px + 0.9vw);
   text-align: center;
   color: rgb(56, 56, 56);
   width: 100%;
@@ -303,22 +318,21 @@ export default {
     position: absolute;
     top: 17%;
     left: 0%;
-    margin-left: 3px;
+    margin-left: 10px;
     font-size: calc(14px + 0.7vw);
 }
 
 .buttons {
-    display: block;
-    position: absolute;
+    width:40%;
+    display: inline-flex;
+    justify-content: space-around;
     top: 0%;
     right: 0%;
 }
 
 .icon {
-    display: inline;
+    display: inline-flex;
     float: right;
-    margin-left: 0.3vw;
-    margin-right: 0.3vw;
     width: calc(10px + 1vw);
     height: calc(10px + 1vw);
     padding: 0px;
@@ -348,30 +362,31 @@ export default {
 .pickerDiv {
     position: absolute;
     display: none;
-    -webkit-transform: translate(-50%, 150%);
-    transform: translate(-50%, 150%);
+    -webkit-transform: translate(-50%, 120%);
+    transform: translate(-50%, 120%);
     left: 50%;
-    width: calc(200px + 15vw);
-    height: 290px;
+    width: calc(190px + 18.5vw);
+    height: 300px;
     background-color: rgb(236, 236, 236);
+    justify-content: space;
 }
 
 .popupDescription {
     position: absolute;
     display: none;
-    -webkit-transform: translate(-50%, 150%);
-    transform: translate(-50%, 150%);
+    -webkit-transform: translate(-50%, 120%);
+    transform: translate(-50%, 120%);
     left: 50%;
     width: calc(200px + 20vw);
-    height: 290px;
-    background-color: rgb(236, 236, 236);
+    height: 300px;
+    background-color: rgb(255, 255, 255);
 }
 
 .picker {
-    display: block;
+    display: flexbox;
     position: absolute;
     margin: auto;
-    width: calc(100px + 14.5vw);
+    width: calc(150px + 15vw);
     top: 10%;
     left: 10%;
     z-index: 10;
@@ -415,7 +430,13 @@ export default {
     font-size: calc(6px + 0.8vw);
 }
 
-.headerText {
+.headerCategoryText {
+    display: inline;
+    width: 70%;
+    text-decoration: underline;
+}
+
+.headerVendorText {
     display: inline;
     width: 100%;
     text-decoration: underline;
@@ -453,6 +474,7 @@ export default {
     right: 5.5%;
     top: 90px;
     width: 22%;
+    padding-bottom: 100px;
 }
 
 .budgetTitle {
@@ -469,7 +491,7 @@ export default {
 
 .budgetItem {
   font-family: "Avenir", Helvetica, Arial, sans-serif;
-  font-size: calc(10px + 0.5vw);
+  font-size: calc(10px + 0.8vw);
   text-align: center;
   color: rgb(56, 56, 56);
   width: 100%;
@@ -518,14 +540,6 @@ export default {
 
     .table {
         width: 80%
-    }
-
-    #picker {
-        width: 250px;
-        height: 150px;
-    }
-    #pickerDiv {
-        width: 300px;
     }
 }
 
