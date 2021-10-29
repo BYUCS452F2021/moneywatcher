@@ -34,7 +34,6 @@ export default {
               min: 0,
               max: 100,
               beginAtZero: true,
-              
             }
           }
         ]
@@ -64,7 +63,9 @@ export default {
           this.chartdata.labels = this.apidata.categories.map((category) => category.name);
           this.chartdata.datasets[0].data = [];
           this.apidata.categories.forEach((category) => {
+            var usedAmount = 100 * category.currentAmount / category.totalAmount;
             this.chartdata.datasets[0].data.push(100 * category.currentAmount / category.totalAmount);
+            if (usedAmount > this.options.scales.yAxes[0].ticks.max) this.options.scales.yAxes[0].ticks.max = usedAmount;
           })
           this.renderChart(this.chartdata, this.options)
       });
