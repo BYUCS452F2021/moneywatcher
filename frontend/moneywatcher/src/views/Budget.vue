@@ -10,10 +10,10 @@
         <p class="row_name">{{category.Name}}</p>
         <p class="row_amount">${{category.Amount.toFixed(2)}}</p>
         <div id="edit_button" v-on:click="deleteCategory(category.categoryID)">
-          <img src="/icons/edit.svg">
+          <img src="/icons/editBlue.svg">
         </div>
         <div id="remove_button" v-on:click="deleteCategory(category.categoryID)">
-          <img src="/icons/delete.svg">
+          <img src="/icons/deleteBlue.svg">
         </div>
       </div>
       <div class="row">
@@ -28,7 +28,7 @@
           </div>
         </div>
         <div id="add_category" v-else v-on:click="setAdd()">
-          <img src="/icons/add.svg">
+          <img src="/icons/addDark.svg">
         </div>
       </div>
       <div class="row" id="footer">
@@ -202,7 +202,7 @@ h2 {
 #remove_button {
   width: 10%;
   self-align: center;
-  padding-top: 6px;
+  padding-top: 10px;
   margin: auto;
 }
 

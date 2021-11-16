@@ -44,14 +44,14 @@
 
 #header {
   height: 70px;
-  background-color: #0CE8BE;
+  background-color: #0F70F2;
   font-size: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: verdana;
   font-weight: bold;
-  color: #0093E0;
+  color: #CAD8DF;
 }
 
 #nav {
@@ -79,7 +79,7 @@
   height: 70px;
   position: fixed;
   bottom: 0;
-  background-color: #0CE8BE;
+  background-color: #0F70F2;
   margin: 0;
   padding: 0;
   align-items: center;
