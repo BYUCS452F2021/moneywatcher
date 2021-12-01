@@ -18,7 +18,7 @@
             key-field="expenseID"
             >
             <template v-slot="{ item }">
-                <!-- TODO: Add edit functionality, show description somehow -->
+                <!-- TODO: Add edit functionality -->
                 <div class="expense" @click="popupDescription(item)">
                     <div class="expenseText, dateText">
                         {{ item.dateString }}
@@ -33,7 +33,7 @@
                     </div>
 
                     <div class="expenseText, vendorText">
-                        {{ item.vendorName }}
+                        {{ item.vendor }}
                     </div>
 
                     <div class="buttons">
@@ -129,24 +129,25 @@ export default {
     },
     updateExpenses() {
       axios.post("/expenses/read_all_names").then((response) => {
-        var result = response.data.result;
+        //console.log(response.data);
+        var result = response.data;
         var newExpenses = [];
         result.forEach((expense) => {
-            var date = new Date(parseInt(expense.Day));
+            var date = new Date(parseInt(expense.day));
             var dateString = new Date(date).toDateString();
             dateString = dateString.substr(dateString.indexOf(" ") + 1);
-            var description = expense.Description;
+            var description = expense.description;
             if (description.length === 0) {
                 description = "No description given.";
             }
           newExpenses.push({
-            expenseID: expense.expenseID,
+            expenseID: expense._id,
             date: date,
             dateString: dateString,
-            amount: parseFloat(expense.Amount).toFixed(2),
+            amount: parseFloat(expense.amount).toFixed(2),
             description: description,
-            vendorName: expense.vendorName,
-            categoryName: expense.categoryName
+            vendor: expense.vendor,
+            categoryName: expense.budget[0].Name
           });
         });
         this.expenses = newExpenses;
@@ -179,7 +180,7 @@ export default {
             dateString: dateString,
             amount: parseFloat(expense.Amount).toFixed(2),
             description: description,
-            vendorName: expense.vendorName,
+            vendor: expense.vendor,
             categoryName: expense.categoryName
           });
         });
@@ -195,7 +196,7 @@ export default {
         event.stopPropagation();
       if (confirm("Are you sure you want to delete that expense?")) {
         axios.post('/expenses/delete', {
-          expenseID: parseInt(expense.expenseID)
+          expenseID: expense._id
         }).then(() => {
           alert("Expense deleted");
           if (this.date.month === null) {
