@@ -130,7 +130,6 @@ export default {
     updateExpenses() {
       axios.post("/expenses/read_all_names").then((response) => {
         var result = response.data;
-        console.log("expenses/read_all_names: ", result); // FIXME
         var newExpenses = [];
         result.forEach((expense) => {
             var date = new Date(parseInt(expense.day));
@@ -165,7 +164,6 @@ export default {
           year: this.date.year,
       }).then((response) => {
         var result = response.data.result;
-        console.log("expenses/read_all_names_by_date: ", result); // FIXME
         var newExpenses = [];
         result.forEach((expense) => {
             var date = new Date(parseInt(expense.Day));
@@ -224,7 +222,6 @@ export default {
     updateBudgets() {
       axios.get("/budget/read_all").then((response) => {
         var result = response.data.result;
-        console.log("budget/read_all: ", result); // FIXME
         var newBudgets = [];
         result.forEach((budget) => {
           newBudgets.push({
