@@ -176,7 +176,6 @@ app.post('/budget/update', (req, res) => {
  */
  app.post('/expenses/read_all_names', async (req, res) => {
     try {
-        //var expenses;
         var expenses = await db.collection('expenses').aggregate([
             {$lookup:
                 {
@@ -188,6 +187,60 @@ app.post('/budget/update', (req, res) => {
                     
             }
         ]).toArray();
+        res.send(expenses);
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+});
+
+/**
+ * Read all rows in the expenses table, sorted by date.
+ */
+ app.post('/expenses/read_all_names_by_date', async (req, res) => {
+    let month = req.body.month;
+    let year = req.body.year.toString();
+
+    console.log(month + " " + year);
+   
+    try {
+        var expenses = await db.collection('expenses').aggregate([
+            {$lookup:
+                {
+                    from: 'budgets',
+                    localField: 'categoryID',
+                    foreignField: '_id',
+                    as: 'budget'
+                }
+                    
+            }
+        ]).toArray();
+        var indexArray = [];
+
+        for (var i = expenses.length - 1; i >= 0; --i) {
+            var expenseDate = new Date(expenses[i].day);
+
+            var expenseMonth = (expenseDate.getMonth() + 1).toString();
+            var expenseYear = expenseDate.getFullYear().toString();
+            
+            if (month != "NaN" && month != null) {
+                if (expenseMonth != month || expenseYear != year) {
+                    indexArray.push(i);
+                }
+            }
+            else {
+                if (expenseYear != year) {
+                    indexArray.push(i);
+                }
+            }
+            
+        }
+
+        while (indexArray.length > 0) {
+            expenses.splice(indexArray[0], 1);
+            indexArray.splice(0, 1);
+        }
+
         res.send(expenses);
     } catch (error) {
         console.log(error);
