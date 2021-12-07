@@ -121,7 +121,12 @@ export default {
   methods: {
     dateChanged(date) {
       this.updateDate(date);
-      this.updateExpensesByDate();
+      if (date.month != null) {
+        this.updateExpensesByDate();
+      } 
+      else {
+        this.updateExpenses();
+      }
     },
     dateCleared() {
       this.date = null;
@@ -129,7 +134,6 @@ export default {
     },
     updateExpenses() {
       axios.post("/expenses/read_all_names").then((response) => {
-        //console.log(response.data);
         var result = response.data;
         var newExpenses = [];
         result.forEach((expense) => {
@@ -164,24 +168,24 @@ export default {
           month: monthToGet,
           year: this.date.year,
       }).then((response) => {
-        var result = response.data.result;
+        var result = response.data;
         var newExpenses = [];
         result.forEach((expense) => {
-            var date = new Date(parseInt(expense.Day));
+            var date = new Date(parseInt(expense.day));
             var dateString = new Date(date).toDateString();
             dateString = dateString.substr(dateString.indexOf(" ") + 1);
-            var description = expense.Description;
+            var description = expense.description;
             if (description.length === 0) {
                 description = "No description given.";
             }
           newExpenses.push({
-            expenseID: expense.expenseID,
+            expenseID: expense._id,
             date: date,
             dateString: dateString,
-            amount: parseFloat(expense.Amount).toFixed(2),
+            amount: parseFloat(expense.amount).toFixed(2),
             description: description,
             vendor: expense.vendor,
-            categoryName: expense.categoryName
+            categoryName: expense.budget[0].Name
           });
         });
         this.expenses = newExpenses;
