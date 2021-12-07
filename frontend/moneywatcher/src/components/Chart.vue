@@ -47,7 +47,6 @@ export default {
   mounted () {
     axios.get('/budget/read_all').then((budgetResponse) => {
       var result = budgetResponse.data.result;
-        console.log("result: ", result); // FIXME
       this.apidata.categories = [];
       result.forEach((category) => {
         this.apidata.categories.push({name: category.Name, totalAmount: category.Amount, currentAmount: 0});
@@ -56,10 +55,7 @@ export default {
         month: 11,
         year: 2021
       }).then((expensesResponse) => {
-          console.log("expensesResponse: ", expensesResponse); // FIXME
-          console.log("expensesResponse.data: ", expensesResponse.data); // FIXME
           expensesResponse.data.forEach((expense) => {
-            console.log("expense: ", expense); // FIXME
             this.apidata.categories.forEach((category) => {
               if (category.name === expense.budget[0].Name) {
                 category.currentAmount += expense.amount;
