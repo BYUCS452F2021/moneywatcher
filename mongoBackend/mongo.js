@@ -200,8 +200,6 @@ app.post('/budget/update', (req, res) => {
  app.post('/expenses/read_all_names_by_date', async (req, res) => {
     let month = req.body.month;
     let year = req.body.year.toString();
-
-    console.log(month + " " + year);
    
     try {
         var expenses = await db.collection('expenses').aggregate([
