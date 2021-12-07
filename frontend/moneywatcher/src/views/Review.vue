@@ -423,7 +423,7 @@ export default {
 
 .expenseText {
     display:inline;
-    width:70%;
+    width:100%;
 }
 
 .vendorText {
@@ -433,7 +433,7 @@ export default {
 
 .amountText {
     display:inline;
-    width:60%;
+    width:100%;
 }
 
 .tableHeaders {
@@ -444,7 +444,7 @@ export default {
 
 .headerCategoryText {
     display: inline;
-    width: 70%;
+    width: 100%;
     text-decoration: underline;
 }
 
@@ -456,7 +456,7 @@ export default {
 
 .headerAmountText {
     display: inline;
-    width: 60%;
+    width: 100%;
     text-decoration: underline;
 }
 
